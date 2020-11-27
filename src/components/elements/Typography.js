@@ -18,12 +18,12 @@ const Header = styled.h2`
 `
 const Title = styled.h4`
 	font-family: 'MontserratBold';
-	color: ${props => props.theme.text.default[600]};
+	color: ${props => props.theme.text.default[700]};
 	font-size: 18px;
 	line-height: 20px;
 `
 const Description = styled.p`
-	color: ${props => props.theme.text.default[500]};
+	color: ${props => props.theme.text.default[600]};
 	font-size: 12px;
 	line-height: 13px;
 `

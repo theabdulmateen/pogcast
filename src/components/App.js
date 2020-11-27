@@ -2,9 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { TransitionGroup, CSSTransition } from 'react-transition-group'
+
 import Layout from './Layout'
-import PodcastListing from './PodcastListing'
 import Home from './Home'
+import Explore from './Explore'
 
 export default function App() {
 	return (
@@ -21,7 +22,7 @@ export default function App() {
 									</Route>
 
 									<Route exact path='/explore'>
-										<PodcastListing />
+										<Explore />
 									</Route>
 								</Switch>
 							</CSSTransition>

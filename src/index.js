@@ -3,9 +3,10 @@ import ReactDOM from 'react-dom'
 import reportWebVitals from './reportWebVitals'
 import { ThemeProvider, createGlobalStyle } from 'styled-components'
 import { normalize } from 'styled-normalize'
-import 'antd/dist/antd.dark.css'
 
+import PlayerProvider from './contexts/PlayerContext'
 import App from './components/App'
+import 'antd/dist/antd.dark.css'
 
 const theme = {
 	primary: '#75634F',
@@ -30,6 +31,7 @@ const theme = {
 		sidebar: '#0A0A0A',
 		main: '#111111',
 		card: '#141414',
+		cardHover: '#343434',
 	},
 	phoneOnly: '@media (max-width: 599px)',
 	tabletPortraitUp: '@media (min-width: 600px)',
@@ -78,8 +80,10 @@ const GlobalStyle = createGlobalStyle`
 ReactDOM.render(
 	<React.StrictMode>
 		<ThemeProvider theme={theme}>
-			<GlobalStyle />
-			<App />
+			<PlayerProvider>
+				<GlobalStyle />
+				<App />
+			</PlayerProvider>
 		</ThemeProvider>
 	</React.StrictMode>,
 	document.getElementById('root')

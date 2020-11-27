@@ -1,39 +1,25 @@
 import { Button, Divider, Skeleton } from 'antd'
 import React, { useEffect, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { PlayCircleFilled } from '@ant-design/icons'
 import axios from 'axios'
+
+import PogcastListing from './PogcastListing'
 
 import Container from './elements/Container'
 import Typography from './elements/Typography'
+import StyledCard from './elements/StyledCard'
+
 import constants from '../constants'
+
 const { BASE_URL } = constants
 const { Header, Title, Description } = Typography
+const { BaseContainer, PogListContainer } = Container
+const { PogCard, Cover, PogButton, Content } = StyledCard
 
-const PogListContainer = styled.div`
-	display: grid;
-	height: 100%;
-	grid-template-columns: repeat(7, minmax(200px, 1fr));
-	gap: 20px;
-`
-const PogCard = styled.div`
-	background-color: ${props => props.theme.background.main};
-	border-radius: 10px;
-	padding: 7px;
-	min-height: 300px;
-`
-const Cover = styled.div`
-	margin-bottom: 10px;
-	img {
-		width: 100%;
-		border-radius: 10px;
-	}
-`
-const Content = styled.div``
-
-export default function PodcastListing() {
+export default function Explore() {
 	const [loading, setLoading] = useState(true)
 	const [bestPodcasts, setBestPodcasts] = useState([])
+	const [genres, setGenres] = useState([])
 	const [errorMessage, setErrorMessage] = useState('')
 	const [viewLimiter, setViewLimiter] = useState(7)
 
@@ -48,6 +34,17 @@ export default function PodcastListing() {
 			.then(response => {
 				setBestPodcasts(response.data.podcasts.slice(0, 7))
 				setLoading(false)
+			})
+			.catch(err => setErrorMessage(err.response.data.message))
+	}
+
+	const fetchGenres = async () => {
+		axios
+			.get(BASE_URL + '/genres', {
+				headers: { 'X-ListenAPI-Key': process.env.REACT_APP_API_KEY },
+			})
+			.then(response => {
+				setGenres(response.data.genres)
 			})
 			.catch(err => setErrorMessage(err.response.data.message))
 	}
@@ -73,48 +70,44 @@ export default function PodcastListing() {
 
 	useEffect(() => {
 		fetchCuratedList()
+		fetchGenres()
 	}, [])
 
 	return (
-		<Container>
+		<BaseContainer>
 			<Header size='large' color={theme.primary}>
 				EXPLORE PODCASTS
 			</Header>
 
 			<Divider />
 
-			<Header size='medium' color={theme.text.secondary}>
+			<Header size='medium' color={theme.text.default[600]}>
 				Trending
 				<Button>show all</Button>
 			</Header>
+			<PogcastListing pogs={bestPodcasts} loading={loading} viewLimiter={viewLimiter} />
+
+			<Divider />
+
+			<Header size='medium' color={theme.text.default[600]}>
+				Select podcast by Category
+				<Button>show all</Button>
+			</Header>
 			<PogListContainer>
-				{bestPodcasts.slice(0, viewLimiter).map(pog => (
+				{genres.slice(0, viewLimiter || 7).map(pog => (
 					<PogCard key={pog.id}>
 						<Skeleton loading={loading} active>
 							<Cover>
-								<img src={pog.thumbnail} alt='podcast cover' />
-								{/* <Button
-									type='primary'
-									shape='circle'
-									icon={<PlayCircleFilled />}
-									size='large'
-								/> */}
+								<img src={'https://unsplash.com/400x400/'} alt='podcast cover' />
 							</Cover>
 							<Content>
-								<Title>{pog.title.substring(0, 17) + '...'}</Title>
-								<Description>
-									{pog.description.length > 100
-										? pog.description
-												.replace(/(<([^>]+)>)/gi, '')
-												.substring(0, 90) + '...'
-										: pog.description.replace(/(<([^>]+)>)/gi, '')}
-								</Description>
+								<Title>{pog.name.substring(0, 50)}</Title>
 							</Content>
 						</Skeleton>
 					</PogCard>
 				))}
 			</PogListContainer>
-		</Container>
+		</BaseContainer>
 	)
 }
 

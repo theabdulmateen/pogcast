@@ -61,7 +61,7 @@ const ActionButton = styled(Button)`
 	width: 200px;
 	height: 50px;
 	margin-right: 4em;
-	transition: transform color 500ms linear;
+	transition: transform 100ms linear, color 100ms linear;
 
 	&:hover,
 	&:active,
