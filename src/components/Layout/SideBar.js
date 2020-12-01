@@ -3,6 +3,7 @@ import styled from 'styled-components'
 
 const SideBarContainer = styled.nav`
 	position: fixed;
+	z-index: 1;
 	width: 75px;
 	height: 100%;
 	background-color: ${props => props.theme.background.sidebar};

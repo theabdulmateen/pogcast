@@ -98,7 +98,10 @@ export default function Explore() {
 					<PogCard key={pog.id}>
 						<Skeleton loading={loading} active>
 							<Cover>
-								<img src={'https://unsplash.com/400x400/'} alt='podcast cover' />
+								{/* <img
+									src={'https://source.unsplash.com/random/400x400'}
+									alt='podcast cover'
+								/> */}
 							</Cover>
 							<Content>
 								<Title>{pog.name.substring(0, 50)}</Title>

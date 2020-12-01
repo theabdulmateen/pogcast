@@ -17,7 +17,10 @@ export default function PogcastListing({ pogs, viewLimiter, loading }) {
 				<PogCard key={pog.id}>
 					<Skeleton loading={loading} active>
 						<Cover>
-							<img src={pog.thumbnail} alt='https://unsplash.com/400x400/' />
+							<img
+								src={pog.thumbnail}
+								alt='https://source.unsplash.com/random/400x400'
+							/>
 							<PogButton className='play-button'>
 								<img src={PlayButtonSvg} alt='Play'></img>
 							</PogButton>

@@ -3,8 +3,8 @@ import { createContext, useReducer } from 'react'
 const initialState = {
 	isPlaying: false,
 	audioLists: [{ name: '', cover: '', musicSrc: '' }],
-	title: null,
-	description: null,
+	title: 'TIkalja',
+	description: 'lorem ipsum',
 	thumbnail: null,
 	playing: false,
 	loaded: false,

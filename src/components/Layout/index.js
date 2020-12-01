@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import PogPlayer from '../PogPlayer'
 import NavBar from './NavBar'
 import SideBar from './SideBar'
 
@@ -18,6 +19,7 @@ export default function Layout({ children }) {
 			<SideBar />
 			<NavBar />
 			<ContentContainer>{children}</ContentContainer>
+			<PogPlayer />
 		</LayoutContainer>
 	)
 }
