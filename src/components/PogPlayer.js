@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react'
 import styled, { css } from 'styled-components'
 import ReactHowler from 'react-howler'
+import { PlayCircleFilled, StepBackwardFilled, StepForwardFilled } from '@ant-design/icons'
 import { Typography as AntTypography } from 'antd'
 import ReactSlider from 'react-slider'
 
@@ -165,8 +166,10 @@ export default function PogPlayer() {
 			</div>
 			<SliderContainer>
 				<PlayerControls>
-					<PlayerButton>previous</PlayerButton>
-					<PlayerButton>play</PlayerButton>
+					<PlayerButton>Prev</PlayerButton>
+					<PlayerButton>
+						<img src={PlayCircleFilled} />
+					</PlayerButton>
 					<PlayerButton>next</PlayerButton>
 				</PlayerControls>
 				<StyledSlider

@@ -6,6 +6,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Layout from './Layout'
 import Home from './Home'
 import Explore from './Explore'
+import './App.less'
 
 export default function App() {
 	return (

@@ -6,7 +6,6 @@ import { normalize } from 'styled-normalize'
 
 import PlayerProvider from './contexts/PlayerContext'
 import App from './components/App'
-import 'antd/dist/antd.dark.css'
 
 const theme = {
 	primary: '#75634F',
