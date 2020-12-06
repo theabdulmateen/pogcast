@@ -1,9 +1,9 @@
 import React from 'react'
 import { Typography as AntTypography } from 'antd'
 
-import ThumbnailElement from './elements/Thumbnail'
+import ThumbnailElements from './elements/Thumbnail'
 
-const { ThumbnailContainer, StyledThumbnail, Details } = ThumbnailElement
+const { ThumbnailContainer, StyledThumbnail, Details } = ThumbnailElements
 const { Title, Text } = AntTypography
 
 export default function Thumbnail({ thumbnail, title, showName }) {

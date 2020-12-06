@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 const ThumbnailContainer = styled.div`
 	display: flex;
-	flex-basis: 20%;
+	flex-basis: 33%;
 `
 const StyledThumbnail = styled.div`
 	display: flex;

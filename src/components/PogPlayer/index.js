@@ -5,6 +5,9 @@ import ReactHowler from 'react-howler'
 import { usePlayerContext } from '../../contexts/PlayerContext'
 import Progress from './Progress'
 import Thumbnail from './Thumbnail'
+import Container from '../elements/Container'
+
+const { PogPlayerContainer, ControlsContainer } = Container
 
 let timer = null
 
@@ -90,22 +93,3 @@ export default function PogPlayer() {
 		</>
 	)
 }
-
-const PogPlayerContainer = styled.div`
-	background-color: #282828;
-	padding: 10px;
-	height: 85px;
-	position: fixed;
-	z-index: 2;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	display: flex;
-	align-content: space-between;
-	justify-content: space-between;
-`
-
-const ControlsContainer = styled.div`
-	display: flex;
-	flex-basis: 20%;
-`
