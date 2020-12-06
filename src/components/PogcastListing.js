@@ -1,5 +1,6 @@
 import React from 'react'
 import { Skeleton } from 'antd'
+import { Link } from 'react-router-dom'
 
 import Container from './elements/Container'
 import Typography from './elements/Typography'
@@ -14,29 +15,31 @@ export default function PogcastListing({ pogs, viewLimiter, loading }) {
 	return (
 		<PogListContainer>
 			{pogs.slice(0, viewLimiter).map(pog => (
-				<PogCard key={pog.id}>
-					<Skeleton loading={loading} active>
-						<Cover>
-							<img
-								src={pog.thumbnail}
-								alt='https://source.unsplash.com/random/400x400'
-							/>
-							<PogButton className='play-button'>
-								<img src={PlayButtonSvg} alt='Play'></img>
-							</PogButton>
-						</Cover>
-						<Content>
-							<Title>{pog.title.substring(0, 17) + '...'}</Title>
-							<Description>
-								{pog.description.length > 100
-									? pog.description
-											.replace(/(<([^>]+)>)/gi, '')
-											.substring(0, 90) + '...'
-									: pog.description.replace(/(<([^>]+)>)/gi, '')}
-							</Description>
-						</Content>
-					</Skeleton>
-				</PogCard>
+				<Link key={pog.id} to={`/pogcast/${pog.id}`}>
+					<PogCard>
+						<Skeleton loading={loading} active>
+							<Cover>
+								<img
+									src={pog.thumbnail}
+									alt='https://source.unsplash.com/random/400x400'
+								/>
+								<PogButton className='play-button'>
+									<img src={PlayButtonSvg} alt='Play'></img>
+								</PogButton>
+							</Cover>
+							<Content>
+								<Title>{pog.title.substring(0, 17) + '...'}</Title>
+								<Description>
+									{pog.description.length > 100
+										? pog.description
+												.replace(/(<([^>]+)>)/gi, '')
+												.substring(0, 90) + '...'
+										: pog.description.replace(/(<([^>]+)>)/gi, '')}
+								</Description>
+							</Content>
+						</Skeleton>
+					</PogCard>
+				</Link>
 			))}
 		</PogListContainer>
 	)

@@ -57,8 +57,6 @@ const GlobalStyle = createGlobalStyle`
 	@font-face {
         font-family: 'Monoton';
 		src: url(/fonts/Monoton-Regular.ttf);
-		font-weight: normal;
-		font-style: normal;
 	}
 	
 	@font-face {

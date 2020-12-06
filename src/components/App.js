@@ -6,6 +6,7 @@ import { TransitionGroup, CSSTransition } from 'react-transition-group'
 import Layout from './Layout'
 import Home from './Home'
 import Explore from './Explore'
+import PogcastDetails from './PogcastDetails'
 import './App.less'
 
 export default function App() {
@@ -24,6 +25,10 @@ export default function App() {
 
 									<Route exact path='/explore'>
 										<Explore />
+									</Route>
+
+									<Route exact path='/pogcast/:pogId'>
+										<PogcastDetails />
 									</Route>
 								</Switch>
 							</CSSTransition>

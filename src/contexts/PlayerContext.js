@@ -1,25 +1,26 @@
-import { createContext, useReducer } from 'react'
+import { createContext, useContext, useReducer } from 'react'
 
 const initialState = {
 	isPlaying: false,
-	audioLists: [{ name: '', cover: '', musicSrc: '' }],
-	title: 'TIkalja',
-	description: 'lorem ipsum',
+	audioLists: [{ title: '', thumbnail: '', src: '' }],
+	title: null,
+	showName: null,
 	thumbnail: null,
-	playing: false,
-	loaded: false,
-	loop: false,
-	mute: false,
-	volume: 1.0,
-	seek: 0.0,
-	isSeeking: false,
+	src: null,
 }
 
 const playerReducer = (state, action) => {
-	switch (action.type) {
-		case 'play': {
+	const { type, payload } = action
+
+	switch (type) {
+		case 'PLAY_EPISODE': {
 			return {
 				...state,
+				title: payload.title,
+				src: payload.src,
+				thumbnail: payload.thumbnail,
+				showName: payload.showName,
+				isPlaying: true,
 			}
 		}
 
@@ -29,7 +30,8 @@ const playerReducer = (state, action) => {
 	}
 }
 
-export const PlayerContext = createContext()
+const PlayerContext = createContext()
+export const usePlayerContext = () => useContext(PlayerContext)
 
 export default function PlayerProvider({ children }) {
 	const [playerState, playerDispatch] = useReducer(playerReducer, initialState)

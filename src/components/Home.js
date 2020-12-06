@@ -31,7 +31,6 @@ const Title = styled.div`
 	color: ${props => props.theme.text.default[800]};
 	font-family: 'Monoton';
 	font-size: 100px;
-	font-weight: bold;
 	line-height: 110px;
 
 	${props => props.theme.phoneOnly} {

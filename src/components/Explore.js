@@ -1,6 +1,6 @@
 import { Button, Divider, Skeleton } from 'antd'
 import React, { useEffect, useState } from 'react'
-import styled, { useTheme } from 'styled-components'
+import { useTheme } from 'styled-components'
 import axios from 'axios'
 
 import PogcastListing from './PogcastListing'
@@ -12,9 +12,9 @@ import StyledCard from './elements/StyledCard'
 import constants from '../constants'
 
 const { BASE_URL } = constants
-const { Header, Title, Description } = Typography
+const { Header, Title } = Typography
 const { BaseContainer, PogListContainer } = Container
-const { PogCard, Cover, PogButton, Content } = StyledCard
+const { PogCard, Cover, Content } = StyledCard
 
 export default function Explore() {
 	const [loading, setLoading] = useState(true)
@@ -23,7 +23,7 @@ export default function Explore() {
 	const [errorMessage, setErrorMessage] = useState('')
 	const [viewLimiter, setViewLimiter] = useState(7)
 
-	const { width } = useViewport()
+	const [width] = useViewport()
 	const theme = useTheme()
 
 	const fetchCuratedList = async () => {
@@ -128,5 +128,5 @@ const useViewport = () => {
 		return () => window.removeEventListener('resize', handleWindowResize)
 	}, [])
 
-	return { width, height }
+	return [width, height]
 }

@@ -9,11 +9,15 @@ const PogCard = styled.div`
 
 	&:hover {
 		background-color: ${props => props.theme.background.cardHover};
+		& > div > img {
+			filter: grayscale(75%);
+		}
 		.play-button {
 			display: block;
 			transform: translate(-50%, -50%);
 			opacity: 1;
 			top: 50%;
+			filter: none;
 		}
 	}
 `
