@@ -21,56 +21,47 @@ export default function Explore() {
 	const [bestPodcasts, setBestPodcasts] = useState([])
 	const [genres, setGenres] = useState([])
 	const [errorMessage, setErrorMessage] = useState('')
-	const [viewLimiter, setViewLimiter] = useState(7)
 
-	const [width] = useViewport()
+	const viewLimit = useViewLimiter()
 	const theme = useTheme()
 
-	const fetchCuratedList = async () => {
+	const fetchBestPodcasts = async (genre, genreId) => {
 		axios
-			.get(BASE_URL + '/best_podcasts', {
+			.get(`${BASE_URL}/best_podcasts?genre_id=${genreId}`, {
 				headers: { 'X-ListenAPI-Key': process.env.REACT_APP_API_KEY },
 			})
 			.then(response => {
-				setBestPodcasts(response.data.podcasts.slice(0, 7))
-				setLoading(false)
+				setBestPodcasts(podcasts => [
+					...podcasts,
+					{ genre, podlist: response.data.podcasts.slice(0, 7) },
+				])
 			})
 			.catch(err => setErrorMessage(err.response.data.message))
 	}
 
-	const fetchGenres = async () => {
+	const populateListing = async topOnly => {
 		axios
-			.get(BASE_URL + '/genres', {
+			.get(`${BASE_URL}/genres?top_level_only=${topOnly}`, {
 				headers: { 'X-ListenAPI-Key': process.env.REACT_APP_API_KEY },
 			})
 			.then(response => {
+				const genres = response.data.genres
+				genres.slice(0, 10).forEach(genre => {
+					fetchBestPodcasts(genre.name, genre.id)
+				})
 				setGenres(response.data.genres)
 			})
 			.catch(err => setErrorMessage(err.response.data.message))
 	}
 
 	useEffect(() => {
-		let limit
+		populateListing(1)
 
-		if (width < 1500) {
-			limit = 6
-		}
-		if (width < 1200 && width > 900) {
-			limit = 5
-		}
-		if (width < 900 && width > 600) {
-			limit = 4
-		}
-		if (width < 600) {
-			limit = 2
-		}
+		const timer = setTimeout(() => {
+			setLoading(false)
+		}, 1000)
 
-		setViewLimiter(limit)
-	}, [width])
-
-	useEffect(() => {
-		fetchCuratedList()
-		fetchGenres()
+		return () => clearTimeout(timer)
 	}, [])
 
 	return (
@@ -79,13 +70,20 @@ export default function Explore() {
 				EXPLORE PODCASTS
 			</Header>
 
-			<Divider />
-
-			<Header size='medium' color={theme.text.default[600]}>
-				Trending
-				<Button>show all</Button>
-			</Header>
-			<PogcastListing pogs={bestPodcasts} loading={loading} viewLimiter={viewLimiter} />
+			{bestPodcasts.map(pogcasts => (
+				<>
+					<Divider />
+					<Header size='medium' color={theme.text.default[600]}>
+						Top podcasts in {pogcasts.genre}
+						<Button>show all</Button>
+					</Header>
+					<PogcastListing
+						pogs={pogcasts.podlist}
+						loading={loading}
+						viewLimit={viewLimit}
+					/>
+				</>
+			))}
 
 			<Divider />
 
@@ -94,7 +92,7 @@ export default function Explore() {
 				<Button>show all</Button>
 			</Header>
 			<PogListContainer>
-				{genres.slice(0, viewLimiter || 7).map(pog => (
+				{genres.slice(0, viewLimit || 7).map(pog => (
 					<PogCard key={pog.id}>
 						<Skeleton loading={loading} active>
 							<Cover>
@@ -129,4 +127,30 @@ const useViewport = () => {
 	}, [])
 
 	return [width, height]
+}
+
+const useViewLimiter = () => {
+	const [limit, setLimit] = useState(7)
+	const [width] = useViewport()
+
+	useEffect(() => {
+		let limit
+
+		if (width < 1500) {
+			limit = 6
+		}
+		if (width < 1200 && width > 900) {
+			limit = 5
+		}
+		if (width < 900 && width > 600) {
+			limit = 4
+		}
+		if (width < 600) {
+			limit = 2
+		}
+
+		setLimit(limit)
+	}, [width])
+
+	return limit
 }

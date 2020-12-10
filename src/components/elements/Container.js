@@ -7,7 +7,7 @@ const BaseContainer = styled.div`
 const PogListContainer = styled.div`
 	display: grid;
 	height: 100%;
-	grid-template-columns: repeat(7, minmax(200px, 1fr));
+	grid-template-columns: repeat(${props => props.viewLimit || 7}, minmax(auto, 1fr));
 	gap: 20px;
 `
 const PogPlayerContainer = styled.div`

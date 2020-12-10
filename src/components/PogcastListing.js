@@ -11,18 +11,15 @@ const { Header, Title, Description } = Typography
 const { PogListContainer } = Container
 const { PogCard, Cover, PogButton, Content } = StyledCard
 
-export default function PogcastListing({ pogs, viewLimiter, loading }) {
+export default function PogcastListing({ pogs, viewLimit, loading }) {
 	return (
-		<PogListContainer>
-			{pogs.slice(0, viewLimiter).map(pog => (
-				<Link key={pog.id} to={`/pogcast/${pog.id}`}>
-					<PogCard>
-						<Skeleton loading={loading} active>
+		<PogListContainer viewLimit={viewLimit}>
+			{pogs.slice(0, viewLimit).map(pog => (
+				<Skeleton paragraph={{ rows: 6 }} loading={loading} active>
+					<Link key={pog.id} to={`/pogcast/${pog.id}`}>
+						<PogCard>
 							<Cover>
-								<img
-									src={pog.thumbnail}
-									alt='https://source.unsplash.com/random/400x400'
-								/>
+								<img src={pog.thumbnail} alt='thumbnail' />
 								<PogButton className='play-button'>
 									<img src={PlayButtonSvg} alt='Play'></img>
 								</PogButton>
@@ -37,9 +34,9 @@ export default function PogcastListing({ pogs, viewLimiter, loading }) {
 										: pog.description.replace(/(<([^>]+)>)/gi, '')}
 								</Description>
 							</Content>
-						</Skeleton>
-					</PogCard>
-				</Link>
+						</PogCard>
+					</Link>
+				</Skeleton>
 			))}
 		</PogListContainer>
 	)

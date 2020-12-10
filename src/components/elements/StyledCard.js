@@ -2,6 +2,7 @@ import styled from 'styled-components'
 
 const PogCard = styled.div`
 	background-color: ${props => props.theme.background.main};
+	height: 100%;
 	border-radius: 10px;
 	padding: 10px;
 	cursor: pointer;
@@ -27,6 +28,7 @@ const Cover = styled.div`
 	img {
 		width: 100%;
 		border-radius: 10px;
+		position: contain;
 	}
 `
 const PogButton = styled.div`

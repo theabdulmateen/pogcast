@@ -123,7 +123,12 @@ export default function Home() {
 					<Link to='/explore'>
 						<ActionButton type='primary'>EXPLORE</ActionButton>
 					</Link>
-					<ActionButton onClick={fetchRandomEpisode} type='default'>
+					<ActionButton
+						onClick={e => {
+							fetchRandomEpisode()
+							e.target.blur()
+						}}
+						type='default'>
 						PLAY RANDOM
 					</ActionButton>
 				</ActionsContainer>
