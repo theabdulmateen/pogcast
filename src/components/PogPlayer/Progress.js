@@ -29,7 +29,6 @@ export default function Progress({
 					renderTrack={Track}
 					renderThumb={Thumb}
 					onBeforeChange={onBeforeChange}
-					onChange={val => console.log('onChange value:', val)}
 					onAfterChange={onAfterChange}
 					thumbActiveClassName='active-thumb'
 				/>

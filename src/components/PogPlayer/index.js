@@ -6,6 +6,7 @@ import { usePlayerContext } from '../../contexts/PlayerContext'
 import Progress from './Progress'
 import Thumbnail from './Thumbnail'
 import Container from '../elements/Container'
+import PlayerControls from './PlayerControls'
 
 const { PogPlayerContainer, ControlsContainer } = Container
 
@@ -17,9 +18,7 @@ export default function PogPlayer() {
 	const [duration, setDuration] = useState()
 	const [current, setCurrent] = useState()
 	const [progress, setProgress] = useState()
-	const [volume, setVolume] = useState(0.3)
 	const [playable, setPlayable] = useState(false)
-	const [mute, setMute] = useState(false)
 
 	const audioRef = useRef()
 
@@ -63,12 +62,12 @@ export default function PogPlayer() {
 				<ReactHowler
 					html5={true}
 					ref={audioRef}
-					volume={parseFloat(volume)}
-					mute={mute}
+					volume={parseFloat(playerState.volume / 100).toPrecision(2)}
+					mute={playerState.isMuted}
 					playing={playerState.isPlaying}
 					src={playerState.src}
 					onLoad={handleLoad}
-					onPlay={() => (timer = setInterval(updateProgress, 1000))}
+					onPlay={() => (timer = setInterval(updateProgress, 10))}
 					onEnd={handleStop}
 				/>
 			)}
@@ -88,7 +87,7 @@ export default function PogPlayer() {
 					duration={duration}
 				/>
 
-				<ControlsContainer>controls</ControlsContainer>
+				<PlayerControls />
 			</PogPlayerContainer>
 		</>
 	)

@@ -16,7 +16,7 @@ const PlayerButton = styled.div`
 		width: 17px;
 	}
 
-	.play > svg {
+	.play-pause > svg {
 		height: 30px;
 		width: 30px;
 		transition: transform 100ms linear;
@@ -27,7 +27,7 @@ const PlayerButton = styled.div`
 			color: #bdbdbd;
 		}
 
-		.play > svg {
+		.play-pause > svg {
 			transform: scale(1.1);
 		}
 	}

@@ -2,6 +2,8 @@ import { createContext, useContext, useReducer } from 'react'
 
 const initialState = {
 	isPlaying: false,
+	volume: 30,
+	isMuted: false,
 	audioLists: [{ title: '', thumbnail: '', src: '' }],
 	title: null,
 	showName: null,
@@ -21,6 +23,35 @@ const playerReducer = (state, action) => {
 				thumbnail: payload.thumbnail,
 				showName: payload.showName,
 				isPlaying: true,
+			}
+		}
+
+		case 'SET_VOLUME': {
+			return {
+				...state,
+				isMuted: false,
+				volume: payload.volume,
+			}
+		}
+
+		case 'TOGGLE_MUTE': {
+			return {
+				...state,
+				isMuted: !state.isMuted,
+			}
+		}
+
+		case 'PLAY': {
+			return {
+				...state,
+				isPlaying: true,
+			}
+		}
+
+		case 'PAUSE': {
+			return {
+				...state,
+				isPlaying: false,
 			}
 		}
 

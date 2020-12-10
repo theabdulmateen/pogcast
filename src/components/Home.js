@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Button } from 'antd'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+
+import constants from '../constants'
+import { usePlayerContext } from '../contexts/PlayerContext'
+
+const { BASE_URL } = constants
 
 const HomeContainer = styled.div`
 	background: url(/images/POGCASTS_LANDING_BACKGROUND.jpg) center no-repeat;
@@ -83,6 +89,25 @@ const ActionButton = styled(Button)`
 `
 
 export default function Home() {
+	const [playerState, playerDispatch] = usePlayerContext()
+
+	const playEpisode = (title, src, thumbnail, showName) => {
+		playerDispatch({ type: 'PLAY_EPISODE', payload: { title, src, thumbnail, showName } })
+	}
+
+	const fetchRandomEpisode = async () => {
+		axios
+			.get(BASE_URL + '/just_listen', {
+				headers: { 'X-ListenAPI-Key': process.env.REACT_APP_API_KEY },
+			})
+			.then(response => {
+				const ep = response.data
+				console.log(ep)
+				playEpisode(ep.title, ep.audio, ep.thumbnail, ep.podcast.title)
+			})
+			.catch(err => console.error(err))
+	}
+
 	return (
 		<HomeContainer>
 			<Jumbotron>
@@ -98,7 +123,9 @@ export default function Home() {
 					<Link to='/explore'>
 						<ActionButton type='primary'>EXPLORE</ActionButton>
 					</Link>
-					<ActionButton type='default'>PLAY RANDOM</ActionButton>
+					<ActionButton onClick={fetchRandomEpisode} type='default'>
+						PLAY RANDOM
+					</ActionButton>
 				</ActionsContainer>
 			</Jumbotron>
 		</HomeContainer>

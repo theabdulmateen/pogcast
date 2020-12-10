@@ -26,6 +26,8 @@ const PogPlayerContainer = styled.div`
 const ControlsContainer = styled.div`
 	display: flex;
 	flex-basis: 33%;
+	align-items: center;
+	justify-content: flex-end;
 `
 
 const Container = { BaseContainer, PogListContainer, PogPlayerContainer, ControlsContainer }
