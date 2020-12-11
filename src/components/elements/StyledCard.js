@@ -4,7 +4,7 @@ const PogCard = styled.div`
 	background-color: ${props => props.theme.background.main};
 	height: 100%;
 	border-radius: 10px;
-	padding: 10px;
+	padding: 7px;
 	cursor: pointer;
 	transition: background-color 200ms linear;
 
