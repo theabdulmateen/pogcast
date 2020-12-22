@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
 const PogCard = styled.div`
-	background-color: ${props => props.theme.background.main};
+	background-color: ${props => props.theme.background.content};
 	height: 100%;
 	border-radius: 10px;
 	padding: 7px;
@@ -26,7 +26,7 @@ const Cover = styled.div`
 	position: relative;
 	margin-bottom: 10px;
 	img {
-		width: 100%;
+		max-width: 100%;
 		border-radius: 10px;
 		position: contain;
 	}

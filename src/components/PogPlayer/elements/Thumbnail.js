@@ -7,8 +7,8 @@ const ThumbnailContainer = styled.div`
 const StyledThumbnail = styled.div`
 	display: flex;
 	position: relative;
-	width: 60px;
-	margin-right: 2em;
+	width: 75px;
+	margin-right: 1.3em;
 
 	&::before {
 		content: '';
@@ -31,8 +31,13 @@ const Details = styled.div`
 	flex-direction: column;
 	justify-content: center;
 
-	h4 {
+	h4,
+	span {
 		margin: 0;
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
 	}
 `
 

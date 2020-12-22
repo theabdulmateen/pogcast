@@ -1,8 +1,8 @@
 import styled from 'styled-components'
 
 const fontSize = {
-	large: '75px',
-	medium: '45px',
+	large: '65px',
+	medium: '30px',
 }
 
 const lineHeight = {
@@ -21,11 +21,19 @@ const Title = styled.h4`
 	color: ${props => props.theme.text.default[700]};
 	font-size: 18px;
 	line-height: 20px;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 `
 const Description = styled.p`
 	color: ${props => props.theme.text.default[600]};
 	font-size: 12px;
 	line-height: 13px;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 `
 const Typography = { Header, Title, Description }
 

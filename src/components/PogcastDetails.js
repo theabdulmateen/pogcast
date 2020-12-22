@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Skeleton } from 'antd'
+import { PlayCircleFilled } from '@ant-design/icons'
 import { Link, useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import axios from 'axios'
@@ -7,7 +8,7 @@ import axios from 'axios'
 import Container from './elements/Container'
 import Typography from './elements/Typography'
 import StyledCard from './elements/StyledCard'
-import PlayButtonSvg from './static/PlayButton.svg'
+import StyledButton from './elements/StyledButton'
 
 import constants from '../constants'
 import { usePlayerContext } from '../contexts/PlayerContext'
@@ -16,12 +17,89 @@ const { BASE_URL } = constants
 const { Header, Title, Description } = Typography
 const { BaseContainer } = Container
 const { PogCard, Cover, PogButton, Content } = StyledCard
+const { IconButton } = StyledButton
 
 const PogDetailsContainer = styled(BaseContainer)``
-const CardContainer = styled.div`
+const HeaderContainer = styled.div`
 	display: flex;
+	padding-left: 30px;
 `
-const BaseCard = styled.div``
+const HeaderThumbnail = styled.div`
+	max-width: 250px;
+`
+const HeaderCover = styled.div`
+	margin-bottom: 10px;
+	img {
+		min-width: 200px;
+		max-width: 100%;
+		height: auto;
+		border-radius: 10px;
+		position: contain;
+	}
+`
+const HeaderContent = styled(Content)`
+	margin: 2em;
+	align-self: flex-end;
+	-webkit-line-clamp: 6;
+	font-size: 15px;
+	h4 {
+		margin-bottom: 0;
+	}
+`
+const ContentContainer = styled.div`
+	margin-top: 50px;
+	padding: 30px;
+	background-color: ${props => props.theme.background.content};
+	border-radius: 15px;
+
+	${props => props.theme.desktopUp} {
+		display: grid;
+		gap: 75px;
+		grid-template-columns: 2fr 1fr;
+	}
+`
+const Episodes = styled.div``
+const EpisodeCard = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 5fr;
+	grid-template-areas: 'cover content';
+	gap: 15px;
+
+	background-color: ${props => props.theme.background.card};
+	border-radius: 10px;
+	padding: 10px;
+	margin: 20px 0;
+`
+const EpisodeCover = styled.div`
+	margin-bottom: 10px;
+	grid-area: cover;
+
+	img {
+		min-width: 125px;
+		max-width: 100%;
+		height: auto;
+		border-radius: 10px;
+		position: contain;
+	}
+`
+const EpisodeContent = styled.div`
+	grid-area: content;
+	display: flex;
+	flex-direction: column;
+	overflow: hidden;
+`
+const About = styled(Description)`
+	order: 1;
+	padding-left: 10px;
+	margin-bottom: 20px;
+	font-size: 14px;
+	line-height: 17px;
+
+	${props => props.theme.desktopUp} {
+		padding-left: 0;
+		order: 2;
+	}
+`
 
 const PogcastDetails = () => {
 	const { pogId } = useParams()
@@ -50,47 +128,55 @@ const PogcastDetails = () => {
 		fetchPogFromApi()
 	}, [])
 
-	useEffect(() => {
-		console.log(playerState)
-	}, [playerState])
-
 	return (
 		<PogDetailsContainer>
-			<CardContainer>
-				<BaseCard>
+			<HeaderContainer>
+				<HeaderThumbnail>
 					<Skeleton loading={loading} active>
-						<Cover>
-							<img
-								src={pog?.thumbnail}
-								alt='https://source.unsplash.com/random/400x400'
-							/>
-							<PogButton className='play-button'>
-								<img src={PlayButtonSvg} alt='Play'></img>
-							</PogButton>
-						</Cover>
+						<HeaderCover>
+							<img src={pog?.thumbnail} alt={`${pog?.title}`} />
+						</HeaderCover>
 					</Skeleton>
-				</BaseCard>
-				<Content style={{ alignSelf: 'flex-end' }}>
-					<Title>{pog?.title}</Title>
-					<Description>{pog && pog.description.replace(/(<([^>]+)>)/gi, '')}</Description>
-				</Content>
-			</CardContainer>
+				</HeaderThumbnail>
+				<HeaderContent>
+					<Title style={{ fontSize: 40, lineHeight: 2 }}>{pog?.title}</Title>
+					<Title style={{ fontSize: 20 }}>{pog?.publisher}</Title>
+				</HeaderContent>
+			</HeaderContainer>
 
-			{pog &&
-				pog.episodes.map(ep => (
-					<div key={ep.id}>
-						<div>{ep.title}</div>
-						<div>{ep.description.replace(/(<([^>]+)>)/gi, '')}</div>
-						<Button
-							Button
-							type='primary'
-							onClick={() =>
-								playEpisode(ep.title, ep.audio, ep.thumbnail, pog.title)
-							}>
-							Play
-						</Button>
-					</div>
-				))}
+			<ContentContainer>
+				<About>
+					<Title style={{ fontSize: 18 }}>About</Title>
+					{pog && pog.description.replace(/(<([^>]+)>)/gi, '')}
+				</About>
+				<Episodes>
+					<Title style={{ fontSize: 18, paddingLeft: 10 }}>All Episodes</Title>
+					{pog &&
+						pog.episodes.map(ep => (
+							<EpisodeCard key={ep.id}>
+								<Skeleton loading={loading} active>
+									<EpisodeCover>
+										<img src={ep?.thumbnail} alt='episode cover' />
+									</EpisodeCover>
+								</Skeleton>
+								<EpisodeContent>
+									<Title style={{ fontSize: 16, color: '#A3A3A3' }}>
+										{ep.title}
+									</Title>
+									<Description style={{ fontSize: 14, lineHeight: '17px' }}>
+										{ep.description.replace(/(<([^>]+)>)/gi, '')}
+									</Description>
+									<IconButton
+										onClick={() =>
+											playEpisode(ep.title, ep.audio, ep.thumbnail, pog.title)
+										}>
+										<PlayCircleFilled />
+									</IconButton>
+								</EpisodeContent>
+							</EpisodeCard>
+						))}
+				</Episodes>
+			</ContentContainer>
 		</PogDetailsContainer>
 	)
 }

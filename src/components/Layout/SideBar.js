@@ -27,10 +27,10 @@ const SideBarContainer = styled.nav`
 const SideBarItem = styled.div`
 	position: relative;
 	letter-spacing: 4px;
-	cursor: pointer;
 	margin: 1.5em;
 	line-height: 1.5em;
 	transition: color 100ms linear;
+	cursor: pointer;
 
 	&:hover {
 		&::before {
@@ -80,10 +80,6 @@ const NavButton = styled.div`
 
 export default function SideBar() {
 	const loc = useLocation()
-
-	useEffect(() => {
-		console.log(loc)
-	}, [])
 
 	return (
 		<SideBarContainer>

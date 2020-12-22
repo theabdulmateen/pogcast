@@ -1,4 +1,4 @@
-import { Button, Divider, Skeleton } from 'antd'
+import { Button, Divider, Skeleton, Space } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from 'styled-components'
 import axios from 'axios'
@@ -8,6 +8,7 @@ import PogcastListing from './PogcastListing'
 import Container from './elements/Container'
 import Typography from './elements/Typography'
 import StyledCard from './elements/StyledCard'
+import StyledButton from './elements/StyledButton'
 
 import constants from '../constants'
 
@@ -15,6 +16,7 @@ const { BASE_URL } = constants
 const { Header, Title } = Typography
 const { BaseContainer, PogListContainer } = Container
 const { PogCard, Cover, Content } = StyledCard
+const { LinkButton } = StyledButton
 
 export default function Explore() {
 	const [loading, setLoading] = useState(true)
@@ -25,43 +27,34 @@ export default function Explore() {
 	const viewLimit = useViewLimiter()
 	const theme = useTheme()
 
-	const fetchBestPodcasts = async (genre, genreId) => {
-		axios
-			.get(`${BASE_URL}/best_podcasts?genre_id=${genreId}`, {
-				headers: { 'X-ListenAPI-Key': process.env.REACT_APP_API_KEY },
-			})
-			.then(response => {
-				setBestPodcasts(podcasts => [
-					...podcasts,
-					{ genre, podlist: response.data.podcasts.slice(0, 7) },
-				])
-			})
-			.catch(err => setErrorMessage(err.response.data.message))
-	}
-
 	const populateListing = async topOnly => {
-		axios
-			.get(`${BASE_URL}/genres?top_level_only=${topOnly}`, {
+		try {
+			const podcasts = []
+			const options = {
 				headers: { 'X-ListenAPI-Key': process.env.REACT_APP_API_KEY },
-			})
-			.then(response => {
-				const genres = response.data.genres
-				genres.slice(0, 10).forEach(genre => {
-					fetchBestPodcasts(genre.name, genre.id)
-				})
-				setGenres(response.data.genres)
-			})
-			.catch(err => setErrorMessage(err.response.data.message))
+			}
+			const resp = await axios.get(`${BASE_URL}/genres?top_level_only=${topOnly}`, options)
+			const genres = resp.data.genres
+
+			for (const genre of genres.slice(0, 10)) {
+				const resp = await axios.get(
+					`${BASE_URL}/best_podcasts?genre_id=${genre.id}`,
+					options
+				)
+				podcasts.push({ genre, podlist: resp.data.podcasts.slice(0, 7) })
+			}
+
+			setGenres(genres)
+			setBestPodcasts(podcasts)
+			setLoading(false)
+		} catch (err) {
+			console.error(err)
+			setErrorMessage(err.message)
+		}
 	}
 
 	useEffect(() => {
 		populateListing(1)
-
-		const timer = setTimeout(() => {
-			setLoading(false)
-		}, 1000)
-
-		return () => clearTimeout(timer)
 	}, [])
 
 	return (
@@ -70,37 +63,43 @@ export default function Explore() {
 				EXPLORE PODCASTS
 			</Header>
 
-			{bestPodcasts.map(pogcasts => (
+			{loading ? (
 				<>
 					<Divider />
-					<Header size='medium' color={theme.text.default[600]}>
-						Top podcasts in {pogcasts.genre}
-						<Button>show all</Button>
-					</Header>
-					<PogcastListing
-						pogs={pogcasts.podlist}
-						loading={loading}
-						viewLimit={viewLimit}
-					/>
+					<Skeleton loading={loading} active />
+					<Divider />
+					<Skeleton loading={loading} active />
 				</>
-			))}
+			) : (
+				bestPodcasts.map((pogcasts, index) => (
+					<div key={index}>
+						<Divider />
+						<Header size='medium' color={theme.text.default[600]}>
+							Top podcasts in {pogcasts.genre.name}
+							<LinkButton type='link'>show all</LinkButton>
+						</Header>
+						<PogcastListing
+							pogs={pogcasts.podlist}
+							loading={loading}
+							viewLimit={viewLimit}
+						/>
+					</div>
+				))
+			)}
 
 			<Divider />
 
-			<Header size='medium' color={theme.text.default[600]}>
-				Select podcast by Category
-				<Button>show all</Button>
-			</Header>
+			{loading ? (
+				<Skeleton.Button />
+			) : (
+				<Header size='medium' color={theme.text.default[600]}>
+					Select podcast by Category <LinkButton type='link'>show all</LinkButton>
+				</Header>
+			)}
 			<PogListContainer>
 				{genres.slice(0, viewLimit || 7).map(pog => (
 					<PogCard key={pog.id}>
 						<Skeleton loading={loading} active>
-							<Cover>
-								{/* <img
-									src={'https://source.unsplash.com/random/400x400'}
-									alt='podcast cover'
-								/> */}
-							</Cover>
 							<Content>
 								<Title>{pog.name.substring(0, 50)}</Title>
 							</Content>

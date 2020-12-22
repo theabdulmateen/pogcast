@@ -1,5 +1,4 @@
 import React from 'react'
-import { Skeleton } from 'antd'
 import { Link } from 'react-router-dom'
 
 import Container from './elements/Container'
@@ -15,28 +14,22 @@ export default function PogcastListing({ pogs, viewLimit, loading }) {
 	return (
 		<PogListContainer viewLimit={viewLimit}>
 			{pogs.slice(0, viewLimit).map(pog => (
-				<Skeleton paragraph={{ rows: 6 }} loading={loading} active>
-					<Link key={pog.id} to={`/pogcast/${pog.id}`}>
-						<PogCard>
-							<Cover>
-								<img src={pog.thumbnail} alt='thumbnail' />
-								<PogButton className='play-button'>
-									<img src={PlayButtonSvg} alt='Play'></img>
-								</PogButton>
-							</Cover>
-							<Content>
-								<Title>{pog.title.substring(0, 17) + '...'}</Title>
-								<Description>
-									{pog.description.length > 100
-										? pog.description
-												.replace(/(<([^>]+)>)/gi, '')
-												.substring(0, 90) + '...'
-										: pog.description.replace(/(<([^>]+)>)/gi, '')}
-								</Description>
-							</Content>
-						</PogCard>
-					</Link>
-				</Skeleton>
+				<Link key={pog.id} to={`/pogcast/${pog.id}`}>
+					<PogCard>
+						<Cover>
+							<img src={pog.thumbnail} alt='thumbnail' />
+							<PogButton className='play-button'>
+								<img src={PlayButtonSvg} alt='Play'></img>
+							</PogButton>
+						</Cover>
+						<Content>
+							<Title>{pog.title}</Title>
+							<Description>
+								{pog.description.replace(/(<([^>]+)>)/gi, '')}
+							</Description>
+						</Content>
+					</PogCard>
+				</Link>
 			))}
 		</PogListContainer>
 	)
