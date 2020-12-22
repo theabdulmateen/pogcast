@@ -8,6 +8,7 @@ import Home from './Home'
 import Explore from './Explore'
 import PogcastDetails from './PogcastDetails'
 import './App.less'
+import TopPodcastListing from './TopPodcastListing'
 
 export default function App() {
 	return (
@@ -29,6 +30,14 @@ export default function App() {
 
 									<Route exact path='/pogcast/:pogId'>
 										<PogcastDetails />
+									</Route>
+
+									<Route exact path='/genrelisting'>
+										<Home />
+									</Route>
+
+									<Route exact path='/top-podcasts/:genreId'>
+										<TopPodcastListing />
 									</Route>
 								</Switch>
 							</CSSTransition>

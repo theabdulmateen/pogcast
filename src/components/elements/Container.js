@@ -1,4 +1,4 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 const BaseContainer = styled.div`
 	padding: 5em;
@@ -8,10 +8,17 @@ const PogListContainer = styled.div`
 	display: grid;
 	height: 100%;
 	grid-template-columns: repeat(
-		${props => props.viewLimit || 7},
+		${props => props.viewLimit || 8},
 		minmax(0, 1fr)
 	); // min width of 0 to prevent overflow and grid blowup
 	gap: 20px;
+
+	${props =>
+		!props.viewLimit &&
+		css`
+			grid-template-columns: repeat(auto-fill, minmax(175px, 1fr));
+			grid-template-rows: auto;
+		`}
 `
 const PogPlayerContainer = styled.div`
 	background-color: #282828;

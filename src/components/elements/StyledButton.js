@@ -1,7 +1,6 @@
 import styled from 'styled-components'
-import { Link } from 'react-router-dom'
 
-const LinkButton = styled(Link)`
+const LinkButton = styled.div`
 	font-size: 0.6em;
 	color: ${props => props.theme.text.default[500]};
 	letter-spacing: -1px;

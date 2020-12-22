@@ -11,6 +11,7 @@ import StyledCard from './elements/StyledCard'
 import StyledButton from './elements/StyledButton'
 
 import constants from '../constants'
+import { Link } from 'react-router-dom'
 
 const { BASE_URL } = constants
 const { Header, Title } = Typography
@@ -36,12 +37,12 @@ export default function Explore() {
 			const resp = await axios.get(`${BASE_URL}/genres?top_level_only=${topOnly}`, options)
 			const genres = resp.data.genres
 
-			for (const genre of genres.slice(0, 10)) {
+			for (const genre of genres.slice(0, 6)) {
 				const resp = await axios.get(
 					`${BASE_URL}/best_podcasts?genre_id=${genre.id}`,
 					options
 				)
-				podcasts.push({ genre, podlist: resp.data.podcasts.slice(0, 7) })
+				podcasts.push({ genre, podlist: resp.data.podcasts.slice(0, 8) })
 			}
 
 			setGenres(genres)
@@ -72,11 +73,17 @@ export default function Explore() {
 				</>
 			) : (
 				bestPodcasts.map((pogcasts, index) => (
-					<div key={index}>
+					<div key={pogcasts.id}>
 						<Divider />
 						<Header size='medium' color={theme.text.default[600]}>
 							Top podcasts in {pogcasts.genre.name}
-							<LinkButton type='link'>show all</LinkButton>
+							<Link
+								to={{
+									pathname: `/top-podcasts/${pogcasts.genre.id}`,
+									state: { genreName: pogcasts.genre.name },
+								}}>
+								<LinkButton type='link'>show all</LinkButton>
+							</Link>
 						</Header>
 						<PogcastListing
 							pogs={pogcasts.podlist}
@@ -93,11 +100,14 @@ export default function Explore() {
 				<Skeleton.Button />
 			) : (
 				<Header size='medium' color={theme.text.default[600]}>
-					Select podcast by Category <LinkButton type='link'>show all</LinkButton>
+					Select podcast by Category
+					<Link to='/genrelisting'>
+						<LinkButton type='link'>show all</LinkButton>
+					</Link>
 				</Header>
 			)}
 			<PogListContainer>
-				{genres.slice(0, viewLimit || 7).map(pog => (
+				{genres.slice(0, viewLimit || 8).map(pog => (
 					<PogCard key={pog.id}>
 						<Skeleton loading={loading} active>
 							<Content>
@@ -135,13 +145,16 @@ const useViewLimiter = () => {
 	useEffect(() => {
 		let limit
 
-		if (width < 1500) {
-			limit = 6
+		if (width > 1760) {
+			limit = 8
 		}
-		if (width < 1200 && width > 900) {
+		if (width >= 1200 && width < 1760) {
+			limit = 7
+		}
+		if (width >= 900 && width < 1200) {
 			limit = 5
 		}
-		if (width < 900 && width > 600) {
+		if (width >= 600 && width < 900) {
 			limit = 4
 		}
 		if (width < 600) {

@@ -13,7 +13,7 @@ const { PogCard, Cover, PogButton, Content } = StyledCard
 export default function PogcastListing({ pogs, viewLimit, loading }) {
 	return (
 		<PogListContainer viewLimit={viewLimit}>
-			{pogs.slice(0, viewLimit).map(pog => (
+			{pogs?.slice(0, viewLimit).map(pog => (
 				<Link key={pog.id} to={`/pogcast/${pog.id}`}>
 					<PogCard>
 						<Cover>
