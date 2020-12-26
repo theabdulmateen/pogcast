@@ -1,5 +1,54 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { Button } from 'antd'
 import styled from 'styled-components'
+
+import { db, auth, provider } from '../../firebase'
+
+export default function NavBar() {
+	const [user, setUser] = useState(null)
+
+	const signinHandler = () => {
+		auth.signInWithPopup(provider)
+			.then(function (result) {
+				const token = result.credential.accessToken
+				const user = result.user
+			})
+			.catch(function (error) {
+				const errorCode = error.code
+				const errorMessage = error.message
+				const email = error.email
+				const credential = error.credential
+			})
+	}
+
+	useEffect(() => {
+		auth.onAuthStateChanged(user => {
+			if (user) {
+				setUser(user)
+			} else {
+				// signed out
+			}
+		})
+	}, [])
+
+	return (
+		<NavBarContainer>
+			{auth.currentUser ? (
+				<NavBarItem>
+					<img
+						src={auth.currentUser.photoURL}
+						alt='https://source.unsplash.com/400x400/?profile pic'
+					/>
+					<span>{auth.currentUser.displayName}</span>
+				</NavBarItem>
+			) : (
+				<Button type='link' onClick={signinHandler}>
+					Sign in
+				</Button>
+			)}
+		</NavBarContainer>
+	)
+}
 
 const NavBarContainer = styled.nav`
 	display: flex;
@@ -44,14 +93,3 @@ const NavBarItem = styled.div`
 		display: none;
 	}
 `
-
-export default function NavBar() {
-	return (
-		<NavBarContainer>
-			<NavBarItem>
-				<img src='https://source.unsplash.com/400x400/?profile pic' alt='user' />
-				<span>Kara wills</span>
-			</NavBarItem>
-		</NavBarContainer>
-	)
-}

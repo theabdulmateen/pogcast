@@ -7,8 +7,8 @@ import Layout from './Layout'
 import Home from './Home'
 import Explore from './Explore'
 import PogcastDetails from './PogcastDetails'
-import './App.less'
 import TopPodcastListing from './TopPodcastListing'
+import './App.less'
 
 export default function App() {
 	return (

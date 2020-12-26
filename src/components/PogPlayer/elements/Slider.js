@@ -20,7 +20,7 @@ const StyledSlider = styled(ReactSlider)`
 		props.active &&
 		css`
 			.thumb {
-				display: block !important;
+				background-color: #bdbdbd;
 			}
 
 			.track-0 {
@@ -30,10 +30,9 @@ const StyledSlider = styled(ReactSlider)`
 `
 
 const StyledThumb = styled.div`
-	display: none;
 	height: 15px;
 	width: 15px;
-	background-color: #bdbdbd;
+	background-color: #424242;
 	border-radius: 100%;
 	transform: translateY(calc(-50% + 3px));
 	cursor: normal;

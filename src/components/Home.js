@@ -7,7 +7,7 @@ import axios from 'axios'
 import constants from '../constants'
 import { usePlayerContext } from '../contexts/PlayerContext'
 
-const { BASE_URL } = constants
+const { BASE_URL, PLAY_EPISODE } = constants
 
 const HomeContainer = styled.div`
 	background: url(/images/POGCASTS_LANDING_BACKGROUND.jpg) center no-repeat;
@@ -92,7 +92,7 @@ export default function Home() {
 	const [playerState, playerDispatch] = usePlayerContext()
 
 	const playEpisode = (title, src, thumbnail, showName) => {
-		playerDispatch({ type: 'PLAY_EPISODE', payload: { title, src, thumbnail, showName } })
+		playerDispatch({ type: PLAY_EPISODE, payload: { title, src, thumbnail, showName } })
 	}
 
 	const fetchRandomEpisode = async () => {

@@ -1,23 +1,136 @@
 import React, { useEffect, useState } from 'react'
-import { Button, Skeleton } from 'antd'
+import { Skeleton } from 'antd'
 import { PlayCircleFilled } from '@ant-design/icons'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import axios from 'axios'
 
 import Container from './elements/Container'
 import Typography from './elements/Typography'
 import StyledCard from './elements/StyledCard'
 import StyledButton from './elements/StyledButton'
 
+import Api from '../helper/api'
 import constants from '../constants'
 import { usePlayerContext } from '../contexts/PlayerContext'
 
-const { BASE_URL } = constants
-const { Header, Title, Description } = Typography
+const { PLAY_EPISODE, ADD_TO_QUEUE } = constants
+const { Title, Description } = Typography
 const { BaseContainer } = Container
-const { PogCard, Cover, PogButton, Content } = StyledCard
+const { Content } = StyledCard
 const { IconButton } = StyledButton
+const api = new Api()
+
+const PogcastDetails = () => {
+	const { pogId } = useParams()
+	const [playerState, playerDispatch] = usePlayerContext()
+
+	const [loading, setLoading] = useState(true)
+	const [pog, setPog] = useState()
+
+	const playEpisode = (title, src, thumbnail, showName, epQueueList) => {
+		const epQueue = epQueueList.map(ep => ep.id)
+		playerDispatch({
+			type: PLAY_EPISODE,
+			payload: { title, src, thumbnail, showName, epQueue },
+		})
+	}
+
+	const AddToQueue = epId => {
+		let epQueue = playerState.epQueue
+
+		if (epQueue.findIndex(epQId => epQId === epId) === -1) {
+			playerDispatch({
+				type: ADD_TO_QUEUE,
+				payload: { epId },
+			})
+		}
+	}
+
+	useEffect(() => {
+		api.getPogcastById(pogId).then(pog => {
+			setPog(pog)
+			setLoading(false)
+		})
+	}, [pogId])
+
+	if (loading)
+		return (
+			<PogDetailsContainer>
+				<Skeleton active />
+
+				<ContentContainer>
+					<div>
+						<Skeleton active />
+						<Skeleton active />
+						<Skeleton active />
+						<Skeleton active />
+					</div>
+					<div>
+						<Skeleton active />
+					</div>
+				</ContentContainer>
+			</PogDetailsContainer>
+		)
+
+	return (
+		<PogDetailsContainer>
+			<HeaderContainer>
+				<HeaderThumbnail>
+					<HeaderCover>
+						<img src={pog?.thumbnail} alt='cover' />
+					</HeaderCover>
+				</HeaderThumbnail>
+				<HeaderContent>
+					<Title style={{ fontSize: 40, lineHeight: 2 }}>{pog?.title}</Title>
+					<Title style={{ fontSize: 20 }}>{pog?.publisher}</Title>
+				</HeaderContent>
+			</HeaderContainer>
+
+			<ContentContainer>
+				<About>
+					<Title style={{ fontSize: 18 }}>About</Title>
+					{pog && pog.description.replace(/(<([^>]+)>)/gi, '')}
+				</About>
+				<Episodes>
+					<Title style={{ fontSize: 18, paddingLeft: 10 }}>All Episodes</Title>
+					{pog &&
+						pog.episodes.map((ep, index) => (
+							<EpisodeCard key={ep.id}>
+								<EpisodeCover>
+									<img src={ep.thumbnail} alt='episode cover' />
+								</EpisodeCover>
+								<EpisodeContent>
+									<Title style={{ fontSize: 16, color: '#A3A3A3' }}>
+										{ep.title}
+									</Title>
+									<Description style={{ fontSize: 14, lineHeight: '17px' }}>
+										{ep.description.replace(/(<([^>]+)>)/gi, '')}
+									</Description>
+									<IconButton
+										onClick={() =>
+											playEpisode(
+												ep.title,
+												ep.audio,
+												ep.thumbnail,
+												pog.title,
+												pog.episodes.slice(0, index)
+											)
+										}>
+										<PlayCircleFilled />
+									</IconButton>
+									<IconButton onClick={() => AddToQueue(ep.id)}>
+										Add to Queue
+									</IconButton>
+								</EpisodeContent>
+							</EpisodeCard>
+						))}
+				</Episodes>
+			</ContentContainer>
+		</PogDetailsContainer>
+	)
+}
+
+export default PogcastDetails
 
 const PogDetailsContainer = styled(BaseContainer)``
 const HeaderContainer = styled.div`
@@ -88,97 +201,19 @@ const EpisodeContent = styled.div`
 	flex-direction: column;
 	overflow: hidden;
 `
-const About = styled(Description)`
+const About = styled.div`
 	order: 1;
 	padding-left: 10px;
 	margin-bottom: 20px;
 	font-size: 14px;
 	line-height: 17px;
+	display: -webkit-box;
+	-webkit-line-clamp: 3;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
 
 	${props => props.theme.desktopUp} {
 		padding-left: 0;
 		order: 2;
 	}
 `
-
-const PogcastDetails = () => {
-	const { pogId } = useParams()
-	const [playerState, playerDispatch] = usePlayerContext()
-
-	const [loading, setLoading] = useState(false)
-	const [pog, setPog] = useState()
-
-	const playEpisode = (title, src, thumbnail, showName) => {
-		playerDispatch({ type: 'PLAY_EPISODE', payload: { title, src, thumbnail, showName } })
-	}
-
-	const fetchPogFromApi = async () => {
-		axios
-			.get(BASE_URL + '/podcasts/' + pogId, {
-				headers: { 'X-ListenAPI-Key': process.env.REACT_APP_API_KEY },
-			})
-			.then(response => {
-				const pog = response.data
-				setPog(pog)
-			})
-			.catch(err => console.error(err))
-	}
-
-	useEffect(() => {
-		fetchPogFromApi()
-	}, [])
-
-	return (
-		<PogDetailsContainer>
-			<HeaderContainer>
-				<HeaderThumbnail>
-					<Skeleton loading={loading} active>
-						<HeaderCover>
-							<img src={pog?.thumbnail} alt={`${pog?.title}`} />
-						</HeaderCover>
-					</Skeleton>
-				</HeaderThumbnail>
-				<HeaderContent>
-					<Title style={{ fontSize: 40, lineHeight: 2 }}>{pog?.title}</Title>
-					<Title style={{ fontSize: 20 }}>{pog?.publisher}</Title>
-				</HeaderContent>
-			</HeaderContainer>
-
-			<ContentContainer>
-				<About>
-					<Title style={{ fontSize: 18 }}>About</Title>
-					{pog && pog.description.replace(/(<([^>]+)>)/gi, '')}
-				</About>
-				<Episodes>
-					<Title style={{ fontSize: 18, paddingLeft: 10 }}>All Episodes</Title>
-					{pog &&
-						pog.episodes.map(ep => (
-							<EpisodeCard key={ep.id}>
-								<Skeleton loading={loading} active>
-									<EpisodeCover>
-										<img src={ep?.thumbnail} alt='episode cover' />
-									</EpisodeCover>
-								</Skeleton>
-								<EpisodeContent>
-									<Title style={{ fontSize: 16, color: '#A3A3A3' }}>
-										{ep.title}
-									</Title>
-									<Description style={{ fontSize: 14, lineHeight: '17px' }}>
-										{ep.description.replace(/(<([^>]+)>)/gi, '')}
-									</Description>
-									<IconButton
-										onClick={() =>
-											playEpisode(ep.title, ep.audio, ep.thumbnail, pog.title)
-										}>
-										<PlayCircleFilled />
-									</IconButton>
-								</EpisodeContent>
-							</EpisodeCard>
-						))}
-				</Episodes>
-			</ContentContainer>
-		</PogDetailsContainer>
-	)
-}
-
-export default PogcastDetails

@@ -11,6 +11,7 @@
 		"@testing-library/user-event": "^12.1.10",
 		"antd": "^4.8.4",
 		"axios": "^0.21.0",
+		"firebase": "^8.2.1",
 		"react": "^17.0.1",
 		"react-audio-player": "^0.14.0",
 		"react-dom": "^17.0.1",

@@ -73,7 +73,7 @@ export default function Explore() {
 				</>
 			) : (
 				bestPodcasts.map((pogcasts, index) => (
-					<div key={pogcasts.id}>
+					<div key={index}>
 						<Divider />
 						<Header size='medium' color={theme.text.default[600]}>
 							Top podcasts in {pogcasts.genre.name}
