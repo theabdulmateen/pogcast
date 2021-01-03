@@ -8,6 +8,7 @@ import Home from './Home'
 import Explore from './Explore'
 import PogcastDetails from './PogcastDetails'
 import TopPodcastListing from './TopPodcastListing'
+import SearchCatalogs from './SearchCatalogs'
 import './App.less'
 
 export default function App() {
@@ -15,10 +16,10 @@ export default function App() {
 		<Router>
 			<Layout>
 				<Route
-					style={{ height: '100%' }}
 					render={({ location }) => (
-						<TransitionGroup>
-							<CSSTransition key={location.key} classNames='fade' timeout={200}>
+						<TransitionGroup
+							style={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
+							<CSSTransition key={location.key} classNames='fade' timeout={300}>
 								<Switch location={location}>
 									<Route exact path='/'>
 										<Home />
@@ -38,6 +39,10 @@ export default function App() {
 
 									<Route exact path='/top-podcasts/:genreId'>
 										<TopPodcastListing />
+									</Route>
+
+									<Route exact path='/search'>
+										<SearchCatalogs />
 									</Route>
 								</Switch>
 							</CSSTransition>

@@ -11,7 +11,6 @@ const LayoutContainer = styled.div`
 const ContentContainer = styled.div`
 	padding-left: 75px;
 	padding-bottom: 85px;
-	height: 100%;
 `
 
 export default function Layout({ children }) {

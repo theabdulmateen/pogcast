@@ -15,6 +15,7 @@ const Header = styled.h2`
 	font-size: ${props => fontSize[props.size]};
 	line-height: ${props => lineHeight[props.size]};
 	color: ${props => props.color};
+	cursor: default;
 `
 const Title = styled.h4`
 	font-family: 'MontserratBold';
@@ -25,6 +26,7 @@ const Title = styled.h4`
 	-webkit-line-clamp: 1;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
+	cursor: default;
 `
 const Description = styled.p`
 	color: ${props => props.theme.text.default[600]};
@@ -34,6 +36,7 @@ const Description = styled.p`
 	-webkit-line-clamp: 3;
 	-webkit-box-orient: vertical;
 	overflow: hidden;
+	cursor: default;
 `
 const Typography = { Header, Title, Description }
 

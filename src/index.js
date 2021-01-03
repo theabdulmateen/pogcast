@@ -52,7 +52,8 @@ const GlobalStyle = createGlobalStyle`
 	body, html, #root {
 		background-color: ${props => props.theme.background.default};
 		color: ${props => props.theme.text.default[600]};
-	}
+		height: 100%;
+		width: 100%;}
 
 
 	@font-face {

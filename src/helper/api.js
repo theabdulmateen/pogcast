@@ -13,6 +13,30 @@ export default class Api {
 		})
 	}
 
+	getRandomEpisode = async () => {
+		try {
+			const resp = await this.client.get('/just_listen')
+			const ep = resp.data
+			return {
+				title: ep.title,
+				src: ep.audio,
+				thumbnail: ep.thumbnail,
+				showName: ep.podcast.title,
+			}
+		} catch (err) {
+			if (err.response) {
+				console.error(err.response.data)
+				throw err.response.data
+			} else if (err.request) {
+				console.error(err.request.data)
+				throw err.request.data
+			} else {
+				console.error(err)
+				throw err
+			}
+		}
+	}
+
 	getEpisodeById = async epId => {
 		try {
 			const resp = await this.client.get('/episodes/' + epId)
@@ -24,8 +48,16 @@ export default class Api {
 				showName: ep.podcast.title,
 			}
 		} catch (err) {
-			console.error(err)
-			throw err
+			if (err.response) {
+				console.error(err.response.data)
+				throw err.response.data
+			} else if (err.request) {
+				console.error(err.request.data)
+				throw err.request.data
+			} else {
+				console.error(err)
+				throw err
+			}
 		}
 	}
 
@@ -35,8 +67,39 @@ export default class Api {
 			const pog = resp.data
 			return pog
 		} catch (err) {
-			console.error(err)
-			throw err
+			if (err.response) {
+				console.error(err.response.data)
+				throw err.response.data
+			} else if (err.request) {
+				console.error(err.request.data)
+				throw err.request.data
+			} else {
+				console.error(err)
+				throw err
+			}
+		}
+	}
+
+	searchCatalogs = async (searchTerm, searchType = 'episode', filter = {}) => {
+		try {
+			let options = `?q=${searchTerm}&type=${searchType}`
+			for (const key in Object.keys(filter)) {
+				options += `&${key}=${filter[key]}`
+			}
+
+			const resp = await this.client.get('/search' + options)
+			return resp.data.results
+		} catch (err) {
+			if (err.response) {
+				console.error(err.response.data)
+				throw err.response.data
+			} else if (err.request) {
+				console.error(err.request.data)
+				throw err.request.data
+			} else {
+				console.error(err)
+				throw err
+			}
 		}
 	}
 }

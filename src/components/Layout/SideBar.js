@@ -89,13 +89,13 @@ export default function SideBar() {
 				</SideBarItem>
 			</Link>
 			<Link to='/explore'>
-				<SideBarItem className={loc.pathname !== '/' ? 'sidebar-item-active' : ''}>
+				<SideBarItem className={loc.pathname === '/explore' ? 'sidebar-item-active' : ''}>
 					<NavButton>Explore</NavButton>
 				</SideBarItem>
 			</Link>
-			<Link to='/'>
+			<Link to='/search' className={loc.pathname === '/search' ? 'sidebar-item-active' : ''}>
 				<SideBarItem>
-					<NavButton>Likes</NavButton>
+					<NavButton>Search</NavButton>
 				</SideBarItem>
 			</Link>
 			<Link to='/'>

@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { useLocation, useParams } from 'react-router-dom'
 import { useTheme } from 'styled-components'
 import { Divider, Skeleton } from 'antd'
 import axios from 'axios'
 
 import Container from './elements/Container'
 import Typography from './elements/Typography'
-import StyledCard from './elements/StyledCard'
 
 import constants from '../constants'
 import PogcastListing from './PogcastListing'
 
 const { BASE_URL } = constants
-const { Header, Title, Description } = Typography
-const { PogListContainer, BaseContainer } = Container
-const { PogCard, Cover, PogButton, Content } = StyledCard
+const { Header } = Typography
+const { BaseContainer } = Container
 
 export default function TopPodcastListing() {
 	const [loading, setLoading] = useState(true)

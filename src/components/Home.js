@@ -1,20 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Button } from 'antd'
 import { Link } from 'react-router-dom'
-import axios from 'axios'
 
+import Api from '../helper/api'
 import constants from '../constants'
 import { usePlayerContext } from '../contexts/PlayerContext'
 
-const { BASE_URL, PLAY_EPISODE } = constants
+const { PLAY_EPISODE } = constants
+const api = new Api()
 
 const HomeContainer = styled.div`
 	background: url(/images/POGCASTS_LANDING_BACKGROUND.jpg) center no-repeat;
 	background-size: cover;
 	position: relative;
 	width: 100%;
-	height: 100vh;
+	height: calc(100vh - 85px);
 `
 
 const Jumbotron = styled.div`
@@ -92,19 +93,15 @@ export default function Home() {
 	const [playerState, playerDispatch] = usePlayerContext()
 
 	const playEpisode = (title, src, thumbnail, showName) => {
-		playerDispatch({ type: PLAY_EPISODE, payload: { title, src, thumbnail, showName } })
+		playerDispatch({
+			type: PLAY_EPISODE,
+			payload: { title, src, thumbnail, showName, epQueue: playerState.epQueue },
+		})
 	}
 
 	const fetchRandomEpisode = async () => {
-		axios
-			.get(BASE_URL + '/just_listen', {
-				headers: { 'X-ListenAPI-Key': process.env.REACT_APP_API_KEY },
-			})
-			.then(response => {
-				const ep = response.data
-				console.log(ep)
-				playEpisode(ep.title, ep.audio, ep.thumbnail, ep.podcast.title)
-			})
+		api.getRandomEpisode()
+			.then(ep => playEpisode(ep.title, ep.src, ep.thumbnail, ep.showName))
 			.catch(err => console.error(err))
 	}
 
