@@ -18,8 +18,8 @@ export default function App() {
 				<Route
 					render={({ location }) => (
 						<TransitionGroup
-							style={{ height: '100%', position: 'relative', overflow: 'hidden' }}>
-							<CSSTransition key={location.key} classNames='fade' timeout={300}>
+							style={{ minHeight: '100%', position: 'relative', overflow: 'hidden' }}>
+							<CSSTransition key={location.key} classNames='fade' timeout={450}>
 								<Switch location={location}>
 									<Route exact path='/'>
 										<Home />
@@ -33,7 +33,7 @@ export default function App() {
 										<PogcastDetails />
 									</Route>
 
-									<Route exact path='/genrelisting'>
+									<Route exact path='/genre-listing'>
 										<Home />
 									</Route>
 

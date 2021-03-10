@@ -1,14 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import styled from 'styled-components'
+import React, { useCallback, useMemo, useRef, useState } from 'react'
 import ReactHowler from 'react-howler'
-
+import constants from '../../constants'
 import { usePlayerContext } from '../../contexts/PlayerContext'
 import Api from '../../helper/api'
-import constants from '../../constants'
-import Progress from './Progress'
-import Thumbnail from './Thumbnail'
 import Container from '../elements/Container'
 import PlayerControls from './PlayerControls'
+import Progress from './Progress'
+import Thumbnail from './Thumbnail'
 
 const { PogPlayerContainer } = Container
 const { PLAY_EPISODE, POP_FROM_QUEUE } = constants
@@ -101,11 +99,8 @@ export default function PogPlayer() {
 				]
 			)}
 			<PogPlayerContainer>
-				<Thumbnail
-					thumbnail={playerState.thumbnail}
-					title={playerState.title}
-					showName={playerState.showName}
-				/>
+				<Thumbnail />
+
 				<Progress
 					playable={playable}
 					progress={progress}

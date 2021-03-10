@@ -1,30 +1,31 @@
+import { MenuUnfoldOutlined } from '@ant-design/icons'
+import { faVolumeDown, faVolumeMute, faVolumeUp } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { Dropdown, Menu } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
-import { Menu, Dropdown, Button } from 'antd'
-import { MenuUnfoldOutlined } from '@ant-design/icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faVolumeUp, faVolumeDown, faVolumeMute } from '@fortawesome/free-solid-svg-icons'
-
-import Container from '../elements/Container'
-import Slider from './elements/Slider'
-import { usePlayerContext } from '../../contexts/PlayerContext'
 import constants from '../../constants'
+import { usePlayerContext } from '../../contexts/PlayerContext'
+import Container from '../elements/Container'
+import StyledButtons from '../elements/StyledButton'
+import Slider from './elements/Slider'
 
 const { ControlsContainer } = Container
 const { SliderContainer, StyledSlider, Thumb, Track } = Slider
+const { ControlsButton } = StyledButtons
 const { SET_VOLUME, TOGGLE_MUTE } = constants
 
-export default function PlayerControls({ volume }) {
+export default function PlayerControls() {
 	const [playerState, playerDispatch] = usePlayerContext()
 
 	const handleChange = value => {
-		const volume = value
+		const volume = parseInt(value)
 		playerDispatch({ type: SET_VOLUME, payload: { volume } })
 	}
 
 	const QueueList = (
 		<Menu>
-			{playerState.epQueue.length === 0 ? (
+			{!playerState.epQueue || playerState.epQueue.length === 0 ? (
 				<Menu.Item>Queue is empty, Saj</Menu.Item>
 			) : (
 				playerState.epQueue.map(ep => <Menu.Item>{ep}</Menu.Item>)
@@ -67,17 +68,6 @@ export default function PlayerControls({ volume }) {
 	)
 }
 
-const ControlsButton = styled.div`
-	width: 10px;
-	margin: 0 10px;
-	cursor: pointer;
-
-	&:hover {
-		svg {
-			color: #bdbdbd;
-		}
-	}
-`
 const VolumeSliderContainer = styled(SliderContainer)`
 	flex-basis: 100px;
 	display: flex;

@@ -3,12 +3,14 @@ import styled from 'styled-components'
 const ThumbnailContainer = styled.div`
 	display: flex;
 	flex-basis: 33%;
+	flex-shrink: 0;
 `
 const StyledThumbnail = styled.div`
 	display: flex;
 	position: relative;
 	width: 75px;
 	margin-right: 1.3em;
+	flex-shrink: 0;
 
 	&::before {
 		content: '';
@@ -30,6 +32,7 @@ const Details = styled.div`
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
+	flex-basis: 75%;
 
 	h4,
 	span {
@@ -41,6 +44,49 @@ const Details = styled.div`
 	}
 `
 
-const Thumbnail = { ThumbnailContainer, StyledThumbnail, Details }
+const ActionButtonsContainer = styled.div`
+	display: flex;
+	align-items: center;
+	flex-basis: inherit;
+`
 
-export default Thumbnail
+const Bookmark = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	h4,
+	span {
+		margin: 0;
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+`
+
+const SavedPogcast = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+
+	h4,
+	span {
+		margin: 0;
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+	}
+`
+
+const ThumbnailElements = {
+	ThumbnailContainer,
+	StyledThumbnail,
+	Details,
+	ActionButtonsContainer,
+	Bookmark,
+	SavedPogcast,
+}
+
+export default ThumbnailElements

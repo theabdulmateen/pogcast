@@ -30,6 +30,18 @@ const IconButton = styled.div`
 	}
 `
 
-const StyledButton = { LinkButton, IconButton }
+const ControlsButton = styled.div`
+	width: 10px;
+	margin: 0 10px;
+	cursor: pointer;
+
+	&:hover {
+		svg {
+			color: #bdbdbd;
+		}
+	}
+`
+
+const StyledButton = { LinkButton, IconButton, ControlsButton }
 
 export default StyledButton

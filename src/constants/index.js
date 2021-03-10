@@ -7,6 +7,7 @@ const constants = {
 	SET_VOLUME: 'Set volume',
 	PLAY: 'Play',
 	PAUSE: 'Pause',
+	SAVE_POGCAST: 'Save pogcast to feed',
 }
 
 export default constants

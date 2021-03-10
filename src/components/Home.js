@@ -16,6 +16,10 @@ const HomeContainer = styled.div`
 	position: relative;
 	width: 100%;
 	height: calc(100vh - 85px);
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+/Edge */
+	user-select: none; /* Standard */
 `
 
 const Jumbotron = styled.div`
@@ -92,16 +96,16 @@ const ActionButton = styled(Button)`
 export default function Home() {
 	const [playerState, playerDispatch] = usePlayerContext()
 
-	const playEpisode = (title, src, thumbnail, showName) => {
+	const playEpisode = (epId, title, src, thumbnail, showName) => {
 		playerDispatch({
 			type: PLAY_EPISODE,
-			payload: { title, src, thumbnail, showName, epQueue: playerState.epQueue },
+			payload: { epId, title, src, thumbnail, showName, epQueue: playerState.epQueue },
 		})
 	}
 
 	const fetchRandomEpisode = async () => {
 		api.getRandomEpisode()
-			.then(ep => playEpisode(ep.title, ep.src, ep.thumbnail, ep.showName))
+			.then(ep => playEpisode(ep.id, ep.title, ep.src, ep.thumbnail, ep.showName))
 			.catch(err => console.error(err))
 	}
 

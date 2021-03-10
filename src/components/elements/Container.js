@@ -3,6 +3,10 @@ import styled, { css } from 'styled-components'
 const BaseContainer = styled.div`
 	padding: 5em;
 	height: 100%;
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+/Edge */
+	user-select: none; /* Standard */
 `
 const PogListContainer = styled.div`
 	display: grid;
@@ -32,6 +36,10 @@ const PogPlayerContainer = styled.div`
 	display: flex;
 	align-content: space-between;
 	justify-content: space-between;
+	-webkit-user-select: none; /* Safari */
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+/Edge */
+	user-select: none; /* Standard */
 `
 const ControlsContainer = styled.div`
 	display: flex;
