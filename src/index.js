@@ -28,6 +28,7 @@ const theme = {
 		default: '#070707',
 		footer: '#060606',
 		sidebar: '#0A0A0A',
+		player: '#282828',
 		main: '#060606',
 		card: '#141414',
 		content: '#111111',

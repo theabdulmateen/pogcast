@@ -1,12 +1,12 @@
 import { createContext, useContext, useReducer } from 'react'
 
 import constants from '../constants'
-import Api from '../helper/api'
 
 const {
 	PLAY_EPISODE,
 	ADD_TO_QUEUE,
 	POP_FROM_QUEUE,
+	UPDATE_QUEUE,
 	TOGGLE_MUTE,
 	SET_VOLUME,
 	PLAY,
@@ -25,8 +25,6 @@ const initialState = {
 	thumbnail: null,
 	src: null,
 }
-
-const api = new Api()
 
 const playerReducer = (state, action) => {
 	const { type, payload } = action
@@ -49,16 +47,24 @@ const playerReducer = (state, action) => {
 		case ADD_TO_QUEUE: {
 			return {
 				...state,
-				epQueue: [payload.epId, ...state.epQueue],
+				epQueue: [{ ...payload }, ...state.epQueue],
 			}
 		}
 
 		case POP_FROM_QUEUE: {
-			const updatedQueue = state.epQueue.splice(payload.index, 1)
+			const newQueue = state.epQueue
+			newQueue.splice(payload.index, 1)
 
 			return {
 				...state,
-				epQueue: updatedQueue,
+				epQueue: newQueue,
+			}
+		}
+
+		case UPDATE_QUEUE: {
+			return {
+				...state,
+				epQueue: payload.epQueue,
 			}
 		}
 

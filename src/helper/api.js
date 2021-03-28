@@ -18,11 +18,23 @@ export default class Api {
 		try {
 			const resp = await this.client.get('/just_listen')
 			const ep = resp.data
+
+			const res = await this.client.get('/podcasts/' + ep.podcast.id)
+			const episodes = res.data.episodes.map(epInList => ({
+				epId: epInList.id,
+				title: epInList.title,
+				thumbnail: epInList.thumbnail,
+				showName: ep.podcast.title,
+			}))
+			// console.log(episodes)
+			// console.log('this epId: ', ep.id)
+
 			return {
 				id: ep.id,
 				title: ep.title,
 				src: ep.audio,
 				thumbnail: ep.thumbnail,
+				epQueue: episodes.slice(1),
 				showName: ep.podcast.title,
 			}
 		} catch (err) {

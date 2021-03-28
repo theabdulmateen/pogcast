@@ -15,11 +15,11 @@ export const useIsSavedPogcast = (epId, pogId) => {
 			.onSnapshot(doc => {
 				const userFeeds = doc.data()
 				if (!!userFeeds) {
-					console.log('Current data: ', userFeeds)
+					// console.log('Current data: ', userFeeds)
 					const pogcasts = userFeeds.pogcasts
 					const isSaved = pogcasts[pogcastId]
-					console.log('pogId: ', pogcastId)
-					console.log('isSaved: ', isSaved)
+					// console.log('pogId: ', pogcastId)
+					// console.log('isSaved: ', isSaved)
 					setIsSaved(isSaved)
 				} else {
 					console.log('no feeds found for user with userId: ', auth.currentUser.uid)
@@ -28,7 +28,7 @@ export const useIsSavedPogcast = (epId, pogId) => {
 	}
 
 	useEffect(() => {
-		console.log('pogId provided, useIsSavedPogcast: ', pogId)
+		// console.log('pogId provided, useIsSavedPogcast: ', pogId)
 
 		if (!epId && !pogId) {
 			return
@@ -38,10 +38,10 @@ export const useIsSavedPogcast = (epId, pogId) => {
 
 		if (auth.currentUser) {
 			if (pogId) {
-				console.log('pogId provided, useIsSavedPogcast: ', pogId)
+				// console.log('pogId provided, useIsSavedPogcast: ', pogId)
 				unsubscribe = setIsSavedFromApi(pogId)
 			} else if (epId) {
-				console.log('epId provided, useIsSavedPogcast', epId)
+				// console.log('epId provided, useIsSavedPogcast', epId)
 				api.getPogcastIdFromEpId(epId).then(pogId => {
 					unsubscribe = setIsSavedFromApi(pogId)
 				})

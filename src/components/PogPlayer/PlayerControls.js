@@ -1,14 +1,15 @@
-import { MenuUnfoldOutlined } from '@ant-design/icons'
-import { faVolumeDown, faVolumeMute, faVolumeUp } from '@fortawesome/free-solid-svg-icons'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown, Menu } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
+import { faVolumeDown, faVolumeMute, faVolumeUp } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 import constants from '../../constants'
 import { usePlayerContext } from '../../contexts/PlayerContext'
+
 import Container from '../elements/Container'
 import StyledButtons from '../elements/StyledButton'
 import Slider from './elements/Slider'
+import Queue from './Queue'
 
 const { ControlsContainer } = Container
 const { SliderContainer, StyledSlider, Thumb, Track } = Slider
@@ -23,23 +24,9 @@ export default function PlayerControls() {
 		playerDispatch({ type: SET_VOLUME, payload: { volume } })
 	}
 
-	const QueueList = (
-		<Menu>
-			{!playerState.epQueue || playerState.epQueue.length === 0 ? (
-				<Menu.Item>Queue is empty, Saj</Menu.Item>
-			) : (
-				playerState.epQueue.map(ep => <Menu.Item>{ep}</Menu.Item>)
-			)}
-		</Menu>
-	)
-
 	return (
 		<ControlsContainer>
-			<Dropdown overlay={QueueList} placement='topCenter' trigger='click' arrow>
-				<ControlsButton>
-					<MenuUnfoldOutlined />
-				</ControlsButton>
-			</Dropdown>
+			<Queue />
 
 			<ControlsButton
 				onClick={() => {

@@ -96,16 +96,16 @@ const ActionButton = styled(Button)`
 export default function Home() {
 	const [playerState, playerDispatch] = usePlayerContext()
 
-	const playEpisode = (epId, title, src, thumbnail, showName) => {
+	const playEpisode = (epId, title, src, thumbnail, showName, epQueue) => {
 		playerDispatch({
 			type: PLAY_EPISODE,
-			payload: { epId, title, src, thumbnail, showName, epQueue: playerState.epQueue },
+			payload: { epId, title, src, thumbnail, showName, epQueue },
 		})
 	}
 
 	const fetchRandomEpisode = async () => {
 		api.getRandomEpisode()
-			.then(ep => playEpisode(ep.id, ep.title, ep.src, ep.thumbnail, ep.showName))
+			.then(ep => playEpisode(ep.id, ep.title, ep.src, ep.thumbnail, ep.showName, ep.epQueue))
 			.catch(err => console.error(err))
 	}
 

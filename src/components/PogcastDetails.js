@@ -31,20 +31,25 @@ const PogcastDetails = () => {
 	const [pog, setPog] = useState()
 
 	const playEpisode = (epId, title, src, thumbnail, showName, epQueueList) => {
-		const epQueue = epQueueList.map(ep => ep.id)
+		const epQueue = epQueueList.map(ep => ({
+			epId: ep.id,
+			title: ep.title,
+			thumbnail: ep.thumbnail,
+			showName,
+		}))
 		playerDispatch({
 			type: PLAY_EPISODE,
 			payload: { epId, title, src, thumbnail, showName, epQueue },
 		})
 	}
 
-	const AddToQueue = epId => {
+	const AddToQueue = (ep, showName) => {
 		let epQueue = playerState.epQueue
 
-		if (epQueue.findIndex(epQId => epQId === epId) === -1) {
+		if (epQueue.findIndex(epInQ => epInQ.epId === ep.id) === -1) {
 			playerDispatch({
 				type: ADD_TO_QUEUE,
-				payload: { epId },
+				payload: { epId: ep.id, title: ep.title, thumbnail: ep.thumbnail, showName },
 			})
 		}
 	}
@@ -130,7 +135,7 @@ const PogcastDetails = () => {
 										<PlayCircleFilled />
 									</IconButton>
 
-									<IconButton onClick={() => AddToQueue(ep.id)}>
+									<IconButton onClick={() => AddToQueue(ep, pog.title)}>
 										Add to Queue
 									</IconButton>
 								</EpisodeContent>

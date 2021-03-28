@@ -1,4 +1,4 @@
-import { Button, Divider, Skeleton, Space } from 'antd'
+import { Divider, Skeleton } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { useTheme } from 'styled-components'
 import axios from 'axios'
@@ -16,7 +16,7 @@ import { Link } from 'react-router-dom'
 const { BASE_URL } = constants
 const { Header, Title } = Typography
 const { BaseContainer, PogListContainer } = Container
-const { PogCard, Cover, Content } = StyledCard
+const { PogCard, Content } = StyledCard
 const { LinkButton } = StyledButton
 
 export default function Explore() {
