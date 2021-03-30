@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Draggable } from 'react-beautiful-dnd'
 import { MenuOutlined, DeleteOutlined } from '@ant-design/icons'
@@ -9,6 +9,40 @@ import constants from '../../constants'
 
 const { POP_FROM_QUEUE } = constants
 const { ControlsButton } = StyledButtons
+
+export default function QueueItem({ ep, index }) {
+	const [, playerDispatch] = usePlayerContext()
+
+	const removeFromQueue = () => {
+		playerDispatch({ type: POP_FROM_QUEUE, payload: { index } })
+	}
+	return (
+		<Draggable draggableId={ep.epId} index={index}>
+			{(provided, snapshot) => (
+				<QueueItemContainer
+					{...provided.draggableProps}
+					ref={provided.innerRef}
+					isDragging={snapshot.isDragging}>
+					<DragHandler {...provided.dragHandleProps}>
+						<MenuOutlined />
+					</DragHandler>
+					<Thumbnail>
+						<img src={ep.thumbnail} alt='' />
+					</Thumbnail>
+					<EpisodeDetails>
+						<h4>{ep.title}</h4>
+						<span>{ep.showName}</span>
+					</EpisodeDetails>
+					<ControlsContainer>
+						<ControlsButton onClick={removeFromQueue} style={{ width: 'auto' }}>
+							<DeleteOutlined style={{ fontSize: '20px' }} />
+						</ControlsButton>
+					</ControlsContainer>
+				</QueueItemContainer>
+			)}
+		</Draggable>
+	)
+}
 
 const QueueItemContainer = styled.div`
 	display: flex;
@@ -59,44 +93,3 @@ const ControlsContainer = styled.div`
 	align-self: center;
 	margin-left: auto;
 `
-
-export default function QueueItem({ ep, index }) {
-	const [_, playerDispatch] = usePlayerContext()
-
-	const removeFromQueue = () => {
-		console.log(_)
-		console.log(index)
-		playerDispatch({ type: POP_FROM_QUEUE, payload: { index } })
-	}
-
-	useEffect(() => {
-		console.log(index)
-	}, [])
-
-	return (
-		<Draggable draggableId={ep.epId} index={index}>
-			{(provided, snapshot) => (
-				<QueueItemContainer
-					{...provided.draggableProps}
-					ref={provided.innerRef}
-					isDragging={snapshot.isDragging}>
-					<DragHandler {...provided.dragHandleProps}>
-						<MenuOutlined />
-					</DragHandler>
-					<Thumbnail>
-						<img src={ep.thumbnail} alt='' />
-					</Thumbnail>
-					<EpisodeDetails>
-						<h4>{ep.title}</h4>
-						<span>{ep.showName}</span>
-					</EpisodeDetails>
-					<ControlsContainer>
-						<ControlsButton onClick={removeFromQueue} style={{ width: 'auto' }}>
-							<DeleteOutlined style={{ fontSize: '20px' }} />
-						</ControlsButton>
-					</ControlsContainer>
-				</QueueItemContainer>
-			)}
-		</Draggable>
-	)
-}

@@ -2,22 +2,22 @@ import React, { useEffect, useState } from 'react'
 import { Button } from 'antd'
 import styled from 'styled-components'
 
-import { db, auth, provider } from '../../firebase'
+import { auth, provider } from '../../firebase'
 
 export default function NavBar() {
-	const [user, setUser] = useState(null)
+	const [, setUser] = useState(null)
 
 	const signinHandler = () => {
 		auth.signInWithPopup(provider)
 			.then(function (result) {
-				const token = result.credential.accessToken
-				const user = result.user
+				// const token = result.credential.accessToken
+				// const user = result.user
 			})
 			.catch(function (error) {
-				const errorCode = error.code
-				const errorMessage = error.message
-				const email = error.email
-				const credential = error.credential
+				// const errorCode = error.code
+				// const errorMessage = error.message
+				// const email = error.email
+				// const credential = error.credential
 			})
 	}
 

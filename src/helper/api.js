@@ -1,5 +1,7 @@
 import axios from 'axios'
-import { db, auth, provider, firebase } from '../firebase'
+import { db, auth } from '../firebase'
+
+import { generateEpQueue } from './generateEpQueue'
 
 export default class Api {
 	constructor() {
@@ -20,23 +22,34 @@ export default class Api {
 			const ep = resp.data
 
 			const res = await this.client.get('/podcasts/' + ep.podcast.id)
-			const episodes = res.data.episodes.map(epInList => ({
-				epId: epInList.id,
-				title: epInList.title,
-				thumbnail: epInList.thumbnail,
-				showName: ep.podcast.title,
-			}))
-			// console.log(episodes)
-			// console.log('this epId: ', ep.id)
+			const epQueue = generateEpQueue(res.data.episodes, ep.podcast.title)
 
 			return {
 				id: ep.id,
 				title: ep.title,
 				src: ep.audio,
 				thumbnail: ep.thumbnail,
-				epQueue: episodes.slice(1),
+				epQueue: epQueue.slice(1),
 				showName: ep.podcast.title,
 			}
+		} catch (err) {
+			if (err.response) {
+				console.error(err.response.data)
+				throw err.response.data
+			} else if (err.request) {
+				console.error(err.request.data)
+				throw err.request.data
+			} else {
+				console.error(err)
+				throw err
+			}
+		}
+	}
+
+	getGenres = async topOnly => {
+		try {
+			const result = await this.client.get(`/genres?top_level_only=${topOnly}`)
+			return result.data.genres
 		} catch (err) {
 			if (err.response) {
 				console.error(err.response.data)
@@ -77,8 +90,8 @@ export default class Api {
 
 	getPogcastById = async pogId => {
 		try {
-			const resp = await this.client.get('/podcasts/' + pogId)
-			const pog = resp.data
+			const result = await this.client.get('/podcasts/' + pogId)
+			const pog = result.data
 			return pog
 		} catch (err) {
 			if (err.response) {
@@ -96,9 +109,27 @@ export default class Api {
 
 	getPogcastIdFromEpId = async epId => {
 		try {
-			const resp = await this.client.get('/episodes/' + epId)
-			const ep = resp.data
+			const result = await this.client.get('/episodes/' + epId)
+			const ep = result.data
 			return ep.podcast.id
+		} catch (err) {
+			if (err.response) {
+				console.error(err.response.data)
+				throw err.response.data
+			} else if (err.request) {
+				console.error(err.request.data)
+				throw err.request.data
+			} else {
+				console.error(err)
+				throw err
+			}
+		}
+	}
+
+	getBestPogcast = async genreId => {
+		try {
+			const result = await this.client.get(`/best_podcasts?genre_id=${genreId}`)
+			return result.data.podcasts
 		} catch (err) {
 			if (err.response) {
 				console.error(err.response.data)
@@ -120,8 +151,8 @@ export default class Api {
 				options += `&${key}=${filter[key]}`
 			}
 
-			const resp = await this.client.get('/search' + options)
-			return resp.data.results
+			const result = await this.client.get('/search' + options)
+			return result.data.results
 		} catch (err) {
 			if (err.response) {
 				console.error(err.response.data)

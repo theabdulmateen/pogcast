@@ -1,6 +1,35 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import styled from 'styled-components'
+
+export default function SideBar() {
+	const loc = useLocation()
+
+	return (
+		<SideBarContainer>
+			<Link to='/'>
+				<SideBarItem className={loc.pathname === '/' ? 'sidebar-item-active' : ''}>
+					<NavButton>Home</NavButton>
+				</SideBarItem>
+			</Link>
+			<Link to='/explore'>
+				<SideBarItem className={loc.pathname === '/explore' ? 'sidebar-item-active' : ''}>
+					<NavButton>Explore</NavButton>
+				</SideBarItem>
+			</Link>
+			<Link to='/search' className={loc.pathname === '/search' ? 'sidebar-item-active' : ''}>
+				<SideBarItem>
+					<NavButton>Search</NavButton>
+				</SideBarItem>
+			</Link>
+			<Link to='/'>
+				<SideBarItem>
+					<NavButton>Feed</NavButton>
+				</SideBarItem>
+			</Link>
+		</SideBarContainer>
+	)
+}
 
 const SideBarContainer = styled.nav`
 	position: fixed;
@@ -77,32 +106,3 @@ const NavButton = styled.div`
 	font-weight: 700;
 	text-align: center;
 `
-
-export default function SideBar() {
-	const loc = useLocation()
-
-	return (
-		<SideBarContainer>
-			<Link to='/'>
-				<SideBarItem className={loc.pathname === '/' ? 'sidebar-item-active' : ''}>
-					<NavButton>Home</NavButton>
-				</SideBarItem>
-			</Link>
-			<Link to='/explore'>
-				<SideBarItem className={loc.pathname === '/explore' ? 'sidebar-item-active' : ''}>
-					<NavButton>Explore</NavButton>
-				</SideBarItem>
-			</Link>
-			<Link to='/search' className={loc.pathname === '/search' ? 'sidebar-item-active' : ''}>
-				<SideBarItem>
-					<NavButton>Search</NavButton>
-				</SideBarItem>
-			</Link>
-			<Link to='/'>
-				<SideBarItem>
-					<NavButton>Feed</NavButton>
-				</SideBarItem>
-			</Link>
-		</SideBarContainer>
-	)
-}

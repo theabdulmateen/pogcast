@@ -25,7 +25,8 @@ const StyledThumbnail = styled.div`
 	}
 
 	img {
-		width: 100%;
+		max-width: 100%;
+		height: auto;
 	}
 `
 const Details = styled.div`

@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react'
-import { Skeleton } from 'antd'
-import { PlayCircleFilled } from '@ant-design/icons'
+import React from 'react'
 import { useParams } from 'react-router-dom'
+import { PlayCircleFilled, HeartOutlined, HeartFilled } from '@ant-design/icons'
+import { Skeleton } from 'antd'
 import styled from 'styled-components'
-import { HeartOutlined, HeartFilled } from '@ant-design/icons'
 
+import Image from './Image'
 import Container from './elements/Container'
 import Typography from './elements/Typography'
 import StyledCard from './elements/StyledCard'
 import StyledButton from './elements/StyledButton'
 
 import Api from '../helper/api'
-import constants from '../constants'
-import { usePlayerContext } from '../contexts/PlayerContext'
+import { usePogcast } from '../hooks/usePogcast'
 import { useIsSavedPogcast } from '../hooks/useIsSavedPogcast'
+import { useQueue } from '../hooks/useQueue'
+import { useEpisodes } from '../hooks/useEpisodes'
 
-const { PLAY_EPISODE, ADD_TO_QUEUE } = constants
 const { Title, Description } = Typography
 const { BaseContainer } = Container
 const { Content } = StyledCard
@@ -24,44 +24,13 @@ const api = new Api()
 
 const PogcastDetails = () => {
 	const { pogId } = useParams()
-	const [playerState, playerDispatch] = usePlayerContext()
+
 	const [isSaved] = useIsSavedPogcast(null, pogId)
+	const [addToQueue] = useQueue()
+	const [playEpisode] = useEpisodes()
+	const { isLoading, data: pog } = usePogcast(pogId)
 
-	const [loading, setLoading] = useState(true)
-	const [pog, setPog] = useState()
-
-	const playEpisode = (epId, title, src, thumbnail, showName, epQueueList) => {
-		const epQueue = epQueueList.map(ep => ({
-			epId: ep.id,
-			title: ep.title,
-			thumbnail: ep.thumbnail,
-			showName,
-		}))
-		playerDispatch({
-			type: PLAY_EPISODE,
-			payload: { epId, title, src, thumbnail, showName, epQueue },
-		})
-	}
-
-	const AddToQueue = (ep, showName) => {
-		let epQueue = playerState.epQueue
-
-		if (epQueue.findIndex(epInQ => epInQ.epId === ep.id) === -1) {
-			playerDispatch({
-				type: ADD_TO_QUEUE,
-				payload: { epId: ep.id, title: ep.title, thumbnail: ep.thumbnail, showName },
-			})
-		}
-	}
-
-	useEffect(() => {
-		api.getPogcastById(pogId).then(pog => {
-			setPog(pog)
-			setLoading(false)
-		})
-	}, [pogId])
-
-	if (loading)
+	if (isLoading)
 		return (
 			<PogDetailsContainer>
 				<Skeleton active />
@@ -83,11 +52,9 @@ const PogcastDetails = () => {
 	return (
 		<PogDetailsContainer>
 			<HeaderContainer>
-				<HeaderThumbnail>
-					<HeaderCover>
-						<img src={pog?.thumbnail} alt='cover' />
-					</HeaderCover>
-				</HeaderThumbnail>
+				<HeaderCover>
+					<Image source={pog?.thumbnail} alt='cover' />
+				</HeaderCover>
 				<HeaderContent>
 					<Title style={{ fontSize: 40, lineHeight: 2 }}>{pog?.title}</Title>
 					<div style={{ display: 'flex' }}>
@@ -112,7 +79,7 @@ const PogcastDetails = () => {
 						pog.episodes.map((ep, index) => (
 							<EpisodeCard key={ep.id}>
 								<EpisodeCover>
-									<img src={ep.thumbnail} alt='episode cover' />
+									<Image source={ep.thumbnail} alt='episode cover' />
 								</EpisodeCover>
 								<EpisodeContent>
 									<Title style={{ fontSize: 16, color: '#A3A3A3' }}>
@@ -121,23 +88,25 @@ const PogcastDetails = () => {
 									<Description style={{ fontSize: 14, lineHeight: '17px' }}>
 										{ep.description.replace(/(<([^>]+)>)/gi, '')}
 									</Description>
-									<IconButton
-										onClick={() =>
-											playEpisode(
-												ep.id,
-												ep.title,
-												ep.audio,
-												ep.thumbnail,
-												pog.title,
-												pog.episodes.slice(0, index)
-											)
-										}>
-										<PlayCircleFilled />
-									</IconButton>
+									<ControlsContainer>
+										<IconButton
+											onClick={() =>
+												playEpisode(
+													ep.id,
+													ep.title,
+													ep.audio,
+													ep.thumbnail,
+													pog.title,
+													pog.episodes.slice(0, index)
+												)
+											}>
+											<PlayCircleFilled />
+										</IconButton>
 
-									<IconButton onClick={() => AddToQueue(ep, pog.title)}>
-										Add to Queue
-									</IconButton>
+										<IconButton onClick={() => addToQueue(ep, pog.title)}>
+											Add to queue
+										</IconButton>
+									</ControlsContainer>
 								</EpisodeContent>
 							</EpisodeCard>
 						))}
@@ -154,11 +123,9 @@ const HeaderContainer = styled.div`
 	display: flex;
 	padding-left: 30px;
 `
-const HeaderThumbnail = styled.div`
-	max-width: 250px;
-`
 const HeaderCover = styled.div`
 	margin-bottom: 10px;
+	min-width: 225px;
 	img {
 		min-width: 200px;
 		max-width: 100%;
@@ -233,4 +200,8 @@ const About = styled.div`
 		padding-left: 0;
 		order: 2;
 	}
+`
+
+const ControlsContainer = styled.div`
+	margin-top: auto;
 `

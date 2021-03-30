@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
+
 import { auth, db } from '../firebase'
 import Api from '../helper/api'
 
@@ -15,11 +15,8 @@ export const useIsSavedPogcast = (epId, pogId) => {
 			.onSnapshot(doc => {
 				const userFeeds = doc.data()
 				if (!!userFeeds) {
-					// console.log('Current data: ', userFeeds)
 					const pogcasts = userFeeds.pogcasts
 					const isSaved = pogcasts[pogcastId]
-					// console.log('pogId: ', pogcastId)
-					// console.log('isSaved: ', isSaved)
 					setIsSaved(isSaved)
 				} else {
 					console.log('no feeds found for user with userId: ', auth.currentUser.uid)
@@ -28,8 +25,6 @@ export const useIsSavedPogcast = (epId, pogId) => {
 	}
 
 	useEffect(() => {
-		// console.log('pogId provided, useIsSavedPogcast: ', pogId)
-
 		if (!epId && !pogId) {
 			return
 		}

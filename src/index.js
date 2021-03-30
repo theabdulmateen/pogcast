@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { QueryClient, QueryClientProvider } from 'react-query'
 import reportWebVitals from './reportWebVitals'
 import { ThemeProvider, createGlobalStyle } from 'styled-components'
 import { normalize } from 'styled-normalize'
@@ -77,14 +78,17 @@ const GlobalStyle = createGlobalStyle`
 		src: url(/fonts/Montserrat-ExtraBold.ttf);
     }
 `
+const queryClient = new QueryClient()
 
 ReactDOM.render(
 	<React.StrictMode>
 		<ThemeProvider theme={theme}>
-			<PlayerProvider>
-				<GlobalStyle />
-				<App />
-			</PlayerProvider>
+			<QueryClientProvider client={queryClient}>
+				<PlayerProvider>
+					<GlobalStyle />
+					<App />
+				</PlayerProvider>
+			</QueryClientProvider>
 		</ThemeProvider>
 	</React.StrictMode>,
 	document.getElementById('root')

@@ -2,7 +2,6 @@ import styled from 'styled-components'
 
 const PogCard = styled.div`
 	background-color: ${props => props.theme.background.content};
-	height: 100%;
 	border-radius: 10px;
 	padding: 7px;
 	cursor: pointer;
@@ -10,9 +9,6 @@ const PogCard = styled.div`
 
 	&:hover {
 		background-color: ${props => props.theme.background.cardHover};
-		& > div > img {
-			filter: grayscale(75%);
-		}
 		.play-button {
 			display: block;
 			transform: translate(-50%, -50%);

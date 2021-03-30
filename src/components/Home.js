@@ -1,14 +1,41 @@
 import React from 'react'
-import styled from 'styled-components'
-import { Button } from 'antd'
 import { Link } from 'react-router-dom'
+import { Button } from 'antd'
+import styled from 'styled-components'
 
-import Api from '../helper/api'
-import constants from '../constants'
-import { usePlayerContext } from '../contexts/PlayerContext'
+import { useRandomEpisode } from '../hooks/useRandomEpisode'
 
-const { PLAY_EPISODE } = constants
-const api = new Api()
+export default function Home() {
+	const playRandomEpisode = useRandomEpisode()
+
+	return (
+		<HomeContainer>
+			<Jumbotron>
+				<Logo>Pogcasts</Logo>
+				<Title>
+					FIND YOUR <br />
+					NEXT FAVORITE <br />
+					SHOW
+				</Title>
+				<Caption>Start listening now</Caption>
+
+				<ActionsContainer>
+					<Link to='/explore'>
+						<ActionButton type='primary'>EXPLORE</ActionButton>
+					</Link>
+					<ActionButton
+						onClick={e => {
+							playRandomEpisode()
+							e.target.blur()
+						}}
+						type='default'>
+						PLAY RANDOM
+					</ActionButton>
+				</ActionsContainer>
+			</Jumbotron>
+		</HomeContainer>
+	)
+}
 
 const HomeContainer = styled.div`
 	background: url(/images/POGCASTS_LANDING_BACKGROUND.jpg) center no-repeat;
@@ -92,48 +119,3 @@ const ActionButton = styled(Button)`
 		transform: translateY(-10%);
 	}
 `
-
-export default function Home() {
-	const [playerState, playerDispatch] = usePlayerContext()
-
-	const playEpisode = (epId, title, src, thumbnail, showName, epQueue) => {
-		playerDispatch({
-			type: PLAY_EPISODE,
-			payload: { epId, title, src, thumbnail, showName, epQueue },
-		})
-	}
-
-	const fetchRandomEpisode = async () => {
-		api.getRandomEpisode()
-			.then(ep => playEpisode(ep.id, ep.title, ep.src, ep.thumbnail, ep.showName, ep.epQueue))
-			.catch(err => console.error(err))
-	}
-
-	return (
-		<HomeContainer>
-			<Jumbotron>
-				<Logo>Pogcasts</Logo>
-				<Title>
-					FIND YOUR <br />
-					NEXT FAVORITE <br />
-					SHOW
-				</Title>
-				<Caption>Start listening now</Caption>
-
-				<ActionsContainer>
-					<Link to='/explore'>
-						<ActionButton type='primary'>EXPLORE</ActionButton>
-					</Link>
-					<ActionButton
-						onClick={e => {
-							fetchRandomEpisode()
-							e.target.blur()
-						}}
-						type='default'>
-						PLAY RANDOM
-					</ActionButton>
-				</ActionsContainer>
-			</Jumbotron>
-		</HomeContainer>
-	)
-}

@@ -1,68 +1,19 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
 import { Input } from 'antd'
 
 import Container from './elements/Container'
 
 import Api from '../helper/api'
-import constants from '../constants'
-import { usePlayerContext } from '../contexts/PlayerContext'
 import PogcastListing from './PogcastListing'
 
-const { BASE_URL, PLAY_EPISODE } = constants
 const { Search } = Input
 const { BaseContainer } = Container
 const api = new Api()
 
-const SearchContainer = styled.div`
-	width: 100%;
-	min-height: calc(100vh - 85px);
-	overflow: hidden;
-	position: relative;
-`
-
-const CoverContainer = styled.div`
-	z-index: 1;
-	width: 100%;
-	min-height: calc(100vh - 485px);
-	top: 0;
-	display: grid;
-	place-items: center;
-`
-
-const CoverHolder = styled.div`
-	height: 100%;
-	width: 100%;
-	background: url(/images/jonathan-farber-8xpTdO1R3dw-unsplash.jpg) center no-repeat;
-	background-size: cover;
-	animation: cover 3s forwards;
-
-	@keyframes cover {
-		0% {
-			transform: scale(1);
-		}
-		100% {
-			transform: scale(1.2);
-		}
-	}
-`
-
-const Title = styled.div`
-	color: ${props => props.theme.text.default[600]};
-	font-size: 100px;
-	font-weight: 600;
-	line-height: 85px;
-	margin-bottom: 25px;
-
-	${props => props.theme.phoneOnly} {
-		font-size: 50px;
-	}
-`
-
 const ListContainer = styled(BaseContainer)``
 
 export default function SearchCatalogs() {
-	const [playerState, playerDispatch] = usePlayerContext()
 	const [pogs, setPogs] = useState([])
 	const [searchTerm, setSearchTerm] = useState('')
 	const [loading, setLoading] = useState(false)
@@ -116,3 +67,48 @@ export default function SearchCatalogs() {
 		</SearchContainer>
 	)
 }
+
+const SearchContainer = styled.div`
+	width: 100%;
+	min-height: calc(100vh - 85px);
+	overflow: hidden;
+	position: relative;
+`
+
+const CoverContainer = styled.div`
+	z-index: 1;
+	width: 100%;
+	min-height: calc(100vh - 485px);
+	top: 0;
+	display: grid;
+	place-items: center;
+`
+
+// const CoverHolder = styled.div`
+// 	height: 100%;
+// 	width: 100%;
+// 	background: url(/images/jonathan-farber-8xpTdO1R3dw-unsplash.jpg) center no-repeat;
+// 	background-size: cover;
+// 	animation: cover 3s forwards;
+
+// 	@keyframes cover {
+// 		0% {
+// 			transform: scale(1);
+// 		}
+// 		100% {
+// 			transform: scale(1.2);
+// 		}
+// 	}
+// `
+
+const Title = styled.div`
+	color: ${props => props.theme.text.default[600]};
+	font-size: 100px;
+	font-weight: 600;
+	line-height: 85px;
+	margin-bottom: 25px;
+
+	${props => props.theme.phoneOnly} {
+		font-size: 50px;
+	}
+`
