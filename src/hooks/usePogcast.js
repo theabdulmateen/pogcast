@@ -1,8 +1,19 @@
-import { useQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 
 import Api from '../helper/api'
 const api = new Api()
 
 export const usePogcast = pogId => {
-	return useQuery(['pogcast', pogId], () => api.getPogcastById(pogId))
+	return useInfiniteQuery(
+		['pogcast', pogId],
+		({ pageParam = null }) => api.getPogcastById(pogId, pageParam),
+		{
+			getNextPageParam: (lastPage, pages) => {
+				// console.log(lastPage)
+				// console.log('____________')
+				// console.log(pages)
+				return lastPage.next_episode_pub_date
+			},
+		}
+	)
 }

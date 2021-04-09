@@ -19,7 +19,7 @@ import { useEpisodes } from '../hooks/useEpisodes'
 const { Title, Description } = Typography
 const { BaseContainer } = Container
 const { Content } = StyledCard
-const { IconButton } = StyledButton
+const { IconButton, LinkButton } = StyledButton
 const api = new Api()
 
 const PogcastDetails = () => {
@@ -28,7 +28,7 @@ const PogcastDetails = () => {
 	const [isSaved] = useIsSavedPogcast(null, pogId)
 	const [addToQueue] = useQueue()
 	const [playEpisode] = useEpisodes()
-	const { isLoading, data: pog } = usePogcast(pogId)
+	const { data, error, fetchNextPage, hasNextPage, isLoading, isError } = usePogcast(pogId)
 
 	if (isLoading)
 		return (
@@ -49,16 +49,25 @@ const PogcastDetails = () => {
 			</PogDetailsContainer>
 		)
 
+	if (isError)
+		return (
+			<PogDetailsContainer>
+				<Skeleton active />
+
+				<ContentContainer>Error: {error}</ContentContainer>
+			</PogDetailsContainer>
+		)
+
 	return (
 		<PogDetailsContainer>
 			<HeaderContainer>
 				<HeaderCover>
-					<Image source={pog?.thumbnail} alt='cover' />
+					<Image source={data.pages[0].thumbnail} alt='cover' />
 				</HeaderCover>
 				<HeaderContent>
-					<Title style={{ fontSize: 40, lineHeight: 2 }}>{pog?.title}</Title>
+					<Title style={{ fontSize: 40, lineHeight: 2 }}>{data.pages[0].title}</Title>
 					<div style={{ display: 'flex' }}>
-						<Title style={{ fontSize: 20 }}>{pog?.publisher}</Title>
+						<Title style={{ fontSize: 20 }}>{data.pages[0].publisher}</Title>
 						<IconButton
 							onClick={() => api.toggleSavePogcast(pogId)}
 							style={{ marginLeft: '20px' }}>
@@ -71,12 +80,12 @@ const PogcastDetails = () => {
 			<ContentContainer>
 				<About>
 					<Title style={{ fontSize: 18 }}>About</Title>
-					{pog && pog.description.replace(/(<([^>]+)>)/gi, '')}
+					{data.pages[0] && data.pages[0].description.replace(/(<([^>]+)>)/gi, '')}
 				</About>
 				<Episodes>
 					<Title style={{ fontSize: 18, paddingLeft: 10 }}>All Episodes</Title>
-					{pog &&
-						pog.episodes.map((ep, index) => (
+					{data.pages.map(pogs =>
+						pogs.episodes.map((ep, index) => (
 							<EpisodeCard key={ep.id}>
 								<EpisodeCover>
 									<Image source={ep.thumbnail} alt='episode cover' />
@@ -96,20 +105,28 @@ const PogcastDetails = () => {
 													ep.title,
 													ep.audio,
 													ep.thumbnail,
-													pog.title,
-													pog.episodes.slice(0, index)
+													data.pages[0].title,
+													data.pages[0].episodes.slice(0, index)
 												)
 											}>
 											<PlayCircleFilled />
 										</IconButton>
 
-										<IconButton onClick={() => addToQueue(ep, pog.title)}>
+										<IconButton
+											onClick={() => addToQueue(ep, data.pages[0].title)}>
 											Add to queue
 										</IconButton>
 									</ControlsContainer>
 								</EpisodeContent>
 							</EpisodeCard>
-						))}
+						))
+					)}
+
+					{hasNextPage && (
+						<LoadMoreButton onClick={() => fetchNextPage()}>
+							Load more...
+						</LoadMoreButton>
+					)}
 				</Episodes>
 			</ContentContainer>
 		</PogDetailsContainer>
@@ -155,7 +172,10 @@ const ContentContainer = styled.div`
 		grid-template-columns: 2fr 1fr;
 	}
 `
-const Episodes = styled.div``
+const Episodes = styled.div`
+	display: flex;
+	flex-direction: column;
+`
 const EpisodeCard = styled.div`
 	display: grid;
 	grid-template-columns: 1fr 5fr;
@@ -204,4 +224,25 @@ const About = styled.div`
 
 const ControlsContainer = styled.div`
 	margin-top: auto;
+`
+const LoadMoreButton = styled(LinkButton)`
+	font-size: 1.2em;
+	position: relative;
+	align-self: center;
+	&::before {
+		content: '';
+		border-top: 1px solid gray;
+		top: 50%;
+		width: 55px;
+		position: absolute;
+		left: -100%;
+	}
+	&::after {
+		content: '';
+		border-top: 1px solid gray;
+		top: 50%;
+		width: 55px;
+		position: absolute;
+		right: -100%;
+	}
 `

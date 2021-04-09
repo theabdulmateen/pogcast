@@ -8,14 +8,14 @@ import Container from './elements/Container'
 import Typography from './elements/Typography'
 import StyledCard from './elements/StyledCard'
 
-import { useBestPogcast } from '../hooks/useBestPogcast'
+import { useBestPogcasts } from '../hooks/useBestPogcasts'
 
 const { Title, Description } = Typography
 const { PogListContainer } = Container
 const { PogCard, Cover, PogButton, Content } = StyledCard
 
 export default function PogcastListing({ genreId, viewLimit }) {
-	const { isLoading, data: pogs } = useBestPogcast(genreId)
+	const { isLoading, data: pogs } = useBestPogcasts(genreId)
 
 	if (isLoading) {
 		return (

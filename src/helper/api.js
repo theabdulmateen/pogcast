@@ -88,9 +88,20 @@ export default class Api {
 		}
 	}
 
-	getPogcastById = async pogId => {
+	getPogcastById = async (pogId, nextEpisodePubDate) => {
 		try {
-			const result = await this.client.get('/podcasts/' + pogId)
+			let result
+			if (nextEpisodePubDate) {
+				result = await this.client.get(
+					'/podcasts/' + pogId + '?next_episode_pub_date=' + nextEpisodePubDate
+				)
+			} else {
+				result = await this.client.get('/podcasts/' + pogId)
+			}
+
+			if (!result) {
+				throw new Error('Invalid request')
+			}
 			const pog = result.data
 			return pog
 		} catch (err) {
@@ -126,7 +137,7 @@ export default class Api {
 		}
 	}
 
-	getBestPogcast = async genreId => {
+	getBestPogcasts = async genreId => {
 		try {
 			const result = await this.client.get(`/best_podcasts?genre_id=${genreId}`)
 			return result.data.podcasts
