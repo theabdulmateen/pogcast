@@ -1,3 +1,4 @@
+import { Button } from 'antd'
 import styled from 'styled-components'
 
 const LinkButton = styled.div`
@@ -41,7 +42,36 @@ const ControlsButton = styled.div`
 		}
 	}
 `
+const ActionButton = styled(Button)`
+	background-color: ${props => props.type === 'primary' && props.theme.primary};
+	color: ${props => props.type === 'default' && props.theme.primary};
+	border: 2px solid ${props => props.theme.primary};
+	font-weight: 600;
+	width: 200px;
+	height: 50px;
+	margin-right: 4em;
+	transition: transform 100ms linear, color 100ms linear;
 
-const StyledButton = { LinkButton, IconButton, ControlsButton }
+	&:hover,
+	&:active,
+	&:focus {
+		/* filled button */
+		background-color: ${props => props.type === 'primary' && props.theme.primary + 'EE'};
+
+		/* default button */
+		border: 2px solid
+			${props =>
+				props.type === 'default'
+					? props.theme.text.default[800]
+					: props.theme.primary + 'EE'};
+		color: ${props => props.theme.text.default[800] + 'EE'};
+	}
+
+	&:hover {
+		transform: translateY(-10%);
+	}
+`
+
+const StyledButton = { LinkButton, IconButton, ControlsButton, ActionButton }
 
 export default StyledButton

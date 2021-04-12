@@ -1,9 +1,11 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { Button } from 'antd'
 import styled from 'styled-components'
 
 import { useRandomEpisode } from '../hooks/useRandomEpisode'
+import StyledButtons from './elements/StyledButton'
+
+const { ActionButton } = StyledButtons
 
 export default function Home() {
 	const playRandomEpisode = useRandomEpisode()
@@ -88,34 +90,4 @@ const Caption = styled.div`
 
 const ActionsContainer = styled.div`
 	margin-top: 4em;
-`
-
-const ActionButton = styled(Button)`
-	background-color: ${props => props.type === 'primary' && props.theme.primary};
-	color: ${props => props.type === 'default' && props.theme.primary};
-	border: 2px solid ${props => props.theme.primary};
-	font-weight: 600;
-	width: 200px;
-	height: 50px;
-	margin-right: 4em;
-	transition: transform 100ms linear, color 100ms linear;
-
-	&:hover,
-	&:active,
-	&:focus {
-		/* filled button */
-		background-color: ${props => props.type === 'primary' && props.theme.primary + 'EE'};
-
-		/* default button */
-		border: 2px solid
-			${props =>
-				props.type === 'default'
-					? props.theme.text.default[800]
-					: props.theme.primary + 'EE'};
-		color: ${props => props.theme.text.default[800] + 'EE'};
-	}
-
-	&:hover {
-		transform: translateY(-10%);
-	}
 `
