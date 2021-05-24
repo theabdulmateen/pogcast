@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Input, Button } from 'antd'
+import { Input } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 
@@ -11,12 +11,10 @@ import Typography from './elements/Typography'
 
 import { useGenres } from '../hooks/useGenres'
 import Image from './Image'
-import Api from '../helper/api'
 import { useSearch } from '../hooks/useSearch'
 
-const api = new Api()
 const { Search } = Input
-const { BaseContainer, PogListContainer } = Container
+const { PogListContainer } = Container
 const { Title, Description } = Typography
 const { PogCard, Cover, Content } = StyledCard
 const { ActionButton } = StyledButton
