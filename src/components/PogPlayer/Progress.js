@@ -10,7 +10,7 @@ import { usePlayerContext } from '../../contexts/PlayerContext'
 import Api from '../../helper/api'
 
 const { SliderContainer, StyledSlider, Thumb, Track } = Slider
-const { PLAY_EPISODE } = constants
+const { PLAY_EPISODE, SEEK } = constants
 const api = new Api()
 
 let timer = null
@@ -18,8 +18,6 @@ let timer = null
 export default function Progress() {
 	const [sliderActive, setSliderActive] = useState(false)
 	const [playerState, playerDispatch] = usePlayerContext()
-	const [duration, setDuration] = useState()
-	const [current, setCurrent] = useState()
 	const [progress, setProgress] = useState()
 	const [playable, setPlayable] = useState(false)
 
@@ -29,23 +27,22 @@ export default function Progress() {
 		const seekValue = (value * audioRef.current.duration()) / 100
 
 		audioRef.current.seek(seekValue)
+		playerDispatch({ type: SEEK, payload: { seek: seekValue } })
 	}
 
 	const handleLoad = useCallback(() => {
-		const duration = audioRef.current.duration()
-		setDuration(duration)
 		setPlayable(true)
-	}, [audioRef, setDuration, setPlayable])
+	}, [setPlayable])
 
-	const updateProgress = () => {
+	const updateProgress = useCallback(() => {
 		if (audioRef.current && audioRef.current.howlerState() === 'loaded') {
 			const seek = audioRef.current.seek()
-			setCurrent(seek)
+			playerDispatch({ type: SEEK, payload: { seek: seek } })
 
 			const percentage = (seek / audioRef.current.duration()) * 100
 			setProgress(percentage)
 		}
-	}
+	}, [playerDispatch])
 
 	const playNextInQueue = useCallback(() => {
 		if (playerState.epQueue.length > 0) {
@@ -54,6 +51,9 @@ export default function Progress() {
 					type: PLAY_EPISODE,
 					payload: {
 						epId: ep.id,
+						pogId: ep.pogcast.id,
+						seek: 0,
+						duration: ep.audio_length_sec,
 						epQueue: playerState.epQueue.slice(1),
 						title: ep.title,
 						thumbnail: ep.thumbnail,
@@ -61,7 +61,6 @@ export default function Progress() {
 						showName: ep.showName,
 					},
 				})
-				// playerDispatch({ type: POP_FROM_QUEUE, payload: { index: 0 } })
 			})
 		}
 	}, [playerState.epQueue, playerDispatch])
@@ -108,9 +107,10 @@ export default function Progress() {
 					playerState.volume,
 					handleLoad,
 					handleEnd,
+					updateProgress,
 				]
 			)}
-			<TimerDisplay position='left' timer={current} />
+			<TimerDisplay position='left' timer={playerState.seek} />
 
 			<SliderContainer>
 				<PlayBack playNextInQueue={playNextInQueue} />
@@ -127,7 +127,7 @@ export default function Progress() {
 				/>
 			</SliderContainer>
 
-			<TimerDisplay position='right' timer={duration} />
+			<TimerDisplay position='right' timer={playerState.duration} />
 		</>
 	)
 }

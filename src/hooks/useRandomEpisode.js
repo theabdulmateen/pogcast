@@ -13,7 +13,7 @@ export const useRandomEpisode = () => {
 			.then(ep =>
 				playerDispatch({
 					type: PLAY_EPISODE,
-					payload: { ...ep, epId: ep.id },
+					payload: { ...ep, epId: ep.id, pogId: ep.pogId },
 				})
 			)
 			.catch(err => console.error(err))

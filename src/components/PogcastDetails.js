@@ -1,33 +1,34 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { PlayCircleFilled, HeartOutlined, HeartFilled } from '@ant-design/icons'
+import { HeartOutlined, HeartFilled } from '@ant-design/icons'
 import { Skeleton } from 'antd'
 import styled from 'styled-components'
 
 import Image from './Image'
+import EpisodeCard from './EpisodeCard'
+
 import Container from './elements/Container'
 import Typography from './elements/Typography'
 import StyledCard from './elements/StyledCard'
 import StyledButton from './elements/StyledButton'
+import Episode from './elements/Episode'
 
 import Api from '../helper/api'
 import { usePogcast } from '../hooks/usePogcast'
 import { useIsSavedPogcast } from '../hooks/useIsSavedPogcast'
-import { useQueue } from '../hooks/useQueue'
-import { useEpisodes } from '../hooks/useEpisodes'
 
-const { Title, Description } = Typography
+const { Title } = Typography
 const { BaseContainer } = Container
 const { Content } = StyledCard
 const { IconButton, LinkButton } = StyledButton
+const { EpisodesContainer } = Episode
+
 const api = new Api()
 
 const PogcastDetails = () => {
 	const { pogId } = useParams()
 
 	const [isSaved] = useIsSavedPogcast(null, pogId)
-	const [addToQueue] = useQueue()
-	const [playEpisode] = useEpisodes()
 	const { data, error, fetchNextPage, hasNextPage, isLoading, isError } = usePogcast(pogId)
 
 	if (isLoading)
@@ -82,43 +83,17 @@ const PogcastDetails = () => {
 					<Title style={{ fontSize: 18 }}>About</Title>
 					{data.pages[0] && data.pages[0].description.replace(/(<([^>]+)>)/gi, '')}
 				</About>
-				<Episodes>
+				<EpisodesContainer>
 					<Title style={{ fontSize: 18, paddingLeft: 10 }}>All Episodes</Title>
 					{data.pages.map(pogs =>
 						pogs.episodes.map((ep, index) => (
-							<EpisodeCard key={ep.id}>
-								<EpisodeCover>
-									<Image source={ep.thumbnail} alt='episode cover' />
-								</EpisodeCover>
-								<EpisodeContent>
-									<Title style={{ fontSize: 16, color: '#A3A3A3' }}>
-										{ep.title}
-									</Title>
-									<Description style={{ fontSize: 14, lineHeight: '17px' }}>
-										{ep.description.replace(/(<([^>]+)>)/gi, '')}
-									</Description>
-									<ControlsContainer>
-										<IconButton
-											onClick={() =>
-												playEpisode(
-													ep.id,
-													ep.title,
-													ep.audio,
-													ep.thumbnail,
-													data.pages[0].title,
-													data.pages[0].episodes.slice(0, index)
-												)
-											}>
-											<PlayCircleFilled />
-										</IconButton>
-
-										<IconButton
-											onClick={() => addToQueue(ep, data.pages[0].title)}>
-											Add to queue
-										</IconButton>
-									</ControlsContainer>
-								</EpisodeContent>
-							</EpisodeCard>
+							<EpisodeCard
+								key={ep.id}
+								ep={ep}
+								pogId={pogs.id}
+								pogcastTitle={data.pages[0].title}
+								epQueue={data.pages[0].episodes.slice(0, index)}
+							/>
 						))
 					)}
 
@@ -127,7 +102,7 @@ const PogcastDetails = () => {
 							Load more...
 						</LoadMoreButton>
 					)}
-				</Episodes>
+				</EpisodesContainer>
 			</ContentContainer>
 		</PogDetailsContainer>
 	)
@@ -172,39 +147,6 @@ const ContentContainer = styled.div`
 		grid-template-columns: 2fr 1fr;
 	}
 `
-const Episodes = styled.div`
-	display: flex;
-	flex-direction: column;
-`
-const EpisodeCard = styled.div`
-	display: grid;
-	grid-template-columns: 1fr 5fr;
-	grid-template-areas: 'cover content';
-	gap: 15px;
-
-	background-color: ${props => props.theme.background.card};
-	border-radius: 10px;
-	padding: 10px;
-	margin: 20px 0;
-`
-const EpisodeCover = styled.div`
-	margin-bottom: 10px;
-	grid-area: cover;
-
-	img {
-		min-width: 125px;
-		max-width: 100%;
-		height: auto;
-		border-radius: 10px;
-		position: contain;
-	}
-`
-const EpisodeContent = styled.div`
-	grid-area: content;
-	display: flex;
-	flex-direction: column;
-	overflow: hidden;
-`
 const About = styled.div`
 	order: 1;
 	padding-left: 10px;
@@ -220,10 +162,6 @@ const About = styled.div`
 		padding-left: 0;
 		order: 2;
 	}
-`
-
-const ControlsContainer = styled.div`
-	margin-top: auto;
 `
 const LoadMoreButton = styled(LinkButton)`
 	font-size: 1.2em;

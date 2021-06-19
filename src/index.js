@@ -4,6 +4,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import reportWebVitals from './reportWebVitals'
 import { ThemeProvider, createGlobalStyle } from 'styled-components'
 import { normalize } from 'styled-normalize'
+import Modal from 'react-modal'
 
 import PlayerProvider from './contexts/PlayerContext'
 import App from './components/App'
@@ -79,6 +80,7 @@ const GlobalStyle = createGlobalStyle`
     }
 `
 const queryClient = new QueryClient()
+Modal.setAppElement('#root')
 
 ReactDOM.render(
 	<React.StrictMode>

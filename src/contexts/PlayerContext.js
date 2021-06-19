@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer } from 'react'
 
 import constants from '../constants'
+import Api from '../helper/api'
 
 const {
 	PLAY_EPISODE,
@@ -11,10 +12,14 @@ const {
 	SET_VOLUME,
 	PLAY,
 	PAUSE,
+	SEEK,
 } = constants
 
 const initialState = {
 	epId: null,
+	pogId: null,
+	seek: 0,
+	duration: 0,
 	isPlaying: false,
 	isLoaded: false,
 	volume: 30,
@@ -26,14 +31,23 @@ const initialState = {
 	src: null,
 }
 
+const api = new Api()
+
 const playerReducer = (state, action) => {
 	const { type, payload } = action
 
 	switch (type) {
 		case PLAY_EPISODE: {
+			if (state.pogId && state.pogId) {
+				api.markPogress(state.pogId, state.epId, state.seek, state.duration)
+			}
+
 			return {
 				...state,
 				epId: payload.epId,
+				pogId: payload.pogId,
+				seek: 0,
+				duration: payload.duration,
 				isLoaded: true,
 				epQueue: payload.epQueue,
 				title: payload.title,
@@ -91,9 +105,20 @@ const playerReducer = (state, action) => {
 		}
 
 		case PAUSE: {
+			if (state.pogId && state.pogId) {
+				api.markPogress(state.pogId, state.epId, state.seek, state.duration)
+			}
+
 			return {
 				...state,
 				isPlaying: false,
+			}
+		}
+
+		case SEEK: {
+			return {
+				...state,
+				seek: payload.seek,
 			}
 		}
 

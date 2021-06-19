@@ -10,8 +10,9 @@ import StyledButton from './elements/StyledButton'
 import Typography from './elements/Typography'
 
 import { useGenres } from '../hooks/useGenres'
-import Image from './Image'
 import { useSearch } from '../hooks/useSearch'
+
+import Image from './Image'
 
 const { Search } = Input
 const { PogListContainer } = Container
@@ -30,6 +31,7 @@ export default function SearchCatalogs() {
 	useEffect(() => {
 		if (status === 'success') {
 			searchResultRef.current.scrollIntoView({ behavior: 'smooth' })
+			setSearchTerm('')
 			setEnabled(false)
 		}
 	}, [status])
@@ -43,7 +45,7 @@ export default function SearchCatalogs() {
 						<Caption>Search for podcast or an episode using keyword</Caption>
 						<StyledSearch
 							allowClear
-							loading={!isLoading}
+							loading={isLoading}
 							prefix={<SearchOutlined />}
 							enterButton='Search'
 							size='large'
@@ -69,6 +71,7 @@ export default function SearchCatalogs() {
 				<PogListContainer>
 					{!isLoading &&
 						status === 'success' &&
+						pogs &&
 						pogs.map(pog => (
 							<Link key={pog.id} to={`/pogcast/${pog.id}`}>
 								<PogCard>

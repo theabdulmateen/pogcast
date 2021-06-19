@@ -8,6 +8,7 @@ import Explore from './Explore'
 import PogcastDetails from './PogcastDetails'
 import TopPodcastListing from './TopPodcastListing'
 import SearchCatalogs from './SearchCatalogs'
+import Feed from './Feed'
 import './App.less'
 
 export default function App() {
@@ -42,6 +43,10 @@ export default function App() {
 
 									<Route exact path='/search'>
 										<SearchCatalogs />
+									</Route>
+
+									<Route exact path='/feed'>
+										<Feed />
 									</Route>
 								</Switch>
 							</CSSTransition>

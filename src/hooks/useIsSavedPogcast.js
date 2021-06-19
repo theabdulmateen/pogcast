@@ -14,13 +14,9 @@ export const useIsSavedPogcast = (epId, pogId) => {
 			.doc(auth.currentUser.uid)
 			.onSnapshot(doc => {
 				const userFeeds = doc.data()
-				if (!!userFeeds) {
-					const pogcasts = userFeeds.pogcasts
-					const isSaved = pogcasts[pogcastId]
-					setIsSaved(isSaved)
-				} else {
-					console.log('no feeds found for user with userId: ', auth.currentUser.uid)
-				}
+				const saved = userFeeds.saved
+				const isSaved = saved[pogcastId]
+				setIsSaved(isSaved)
 			})
 	}
 

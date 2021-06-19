@@ -11,7 +11,9 @@ export default function Image({ source, alt }) {
 		onIntersect: ([{ isIntersecting }], observer) => {
 			if (isIntersecting) {
 				setIsVisible(true)
-				observer.unobserve(ref.current)
+				if (observer && ref.current) {
+					observer.unobserve(ref.current)
+				}
 			}
 		},
 	})

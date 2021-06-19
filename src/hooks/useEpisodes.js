@@ -7,12 +7,32 @@ const { PLAY_EPISODE } = constants
 export const useEpisodes = () => {
 	const [, playerDispatch] = usePlayerContext()
 
-	const playEpisode = (epId, title, src, thumbnail, showName, epQueueList) => {
+	const playEpisode = ({
+		epId,
+		pogId,
+		seek,
+		duration,
+		title,
+		src,
+		thumbnail,
+		showName,
+		epQueueList,
+	}) => {
 		const epQueue = generateEpQueue(epQueueList, showName)
 
 		playerDispatch({
 			type: PLAY_EPISODE,
-			payload: { epId, title, src, thumbnail, showName, epQueue },
+			payload: {
+				epId,
+				pogId,
+				seek,
+				duration,
+				title,
+				src,
+				thumbnail,
+				showName,
+				epQueue,
+			},
 		})
 	}
 

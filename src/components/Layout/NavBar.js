@@ -35,16 +35,18 @@ export default function NavBar() {
 		<NavBarContainer>
 			{auth.currentUser ? (
 				<NavBarItem>
-					<img
+					<ProfilePic
 						src={auth.currentUser.photoURL}
 						alt='https://source.unsplash.com/400x400/?profile pic'
 					/>
-					<span>{auth.currentUser.displayName}</span>
+					<StyledProfileName>{auth.currentUser.displayName}</StyledProfileName>
 				</NavBarItem>
 			) : (
-				<Button type='link' onClick={signinHandler}>
-					Sign in
-				</Button>
+				<NavBarItem>
+					<Button type='link' onClick={signinHandler}>
+						Sign in
+					</Button>
+				</NavBarItem>
 			)}
 		</NavBarContainer>
 	)
@@ -59,6 +61,27 @@ const NavBarContainer = styled.nav`
 	z-index: 2;
 `
 
+const StyledProfileName = styled.nav`
+	user-select: none;
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: -12px;
+		left: -50px;
+		z-index: -1;
+		border-radius: 50%;
+		background-color: #383838;
+		width: 46px;
+		height: 46px;
+	}
+`
+
+const ProfilePic = styled.img`
+	margin-right: 7px;
+`
+
 const NavBarItem = styled.div`
 	margin-left: auto;
 	position: relative;
@@ -71,17 +94,6 @@ const NavBarItem = styled.div`
 		width: 40px;
 		height: 40px;
 		border-radius: 50%;
-	}
-
-	&::before {
-		content: '';
-		position: absolute;
-		left: 0;
-		z-index: -1;
-		border-radius: 50%;
-		background-color: #383838;
-		width: 46px;
-		height: 46px;
 	}
 
 	& span {

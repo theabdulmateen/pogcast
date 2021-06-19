@@ -22,7 +22,7 @@ export default function SideBar() {
 					<NavButton>Search</NavButton>
 				</SideBarItem>
 			</Link>
-			<Link to='/'>
+			<Link to='/feed'>
 				<SideBarItem>
 					<NavButton>Feed</NavButton>
 				</SideBarItem>

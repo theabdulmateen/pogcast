@@ -6,10 +6,11 @@ import {
 	PauseCircleFilled,
 } from '@ant-design/icons'
 
-import constants from '../../constants'
-import { usePlayerContext } from '../../contexts/PlayerContext'
-
 import PlayBackElements from './elements/PlayBack'
+
+import { usePlayerContext } from '../../contexts/PlayerContext'
+import constants from '../../constants'
+
 const { PlayBackContainer, PlayerButton } = PlayBackElements
 const { PLAY, PAUSE } = constants
 
