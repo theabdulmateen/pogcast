@@ -7,23 +7,23 @@ export default function SideBar() {
 
 	return (
 		<SideBarContainer>
-			<Link to='/'>
+			<Link to="/">
 				<SideBarItem className={loc.pathname === '/' ? 'sidebar-item-active' : ''}>
 					<NavButton>Home</NavButton>
 				</SideBarItem>
 			</Link>
-			<Link to='/explore'>
+			<Link to="/explore">
 				<SideBarItem className={loc.pathname === '/explore' ? 'sidebar-item-active' : ''}>
 					<NavButton>Explore</NavButton>
 				</SideBarItem>
 			</Link>
-			<Link to='/search' className={loc.pathname === '/search' ? 'sidebar-item-active' : ''}>
-				<SideBarItem>
+			<Link to="/search">
+				<SideBarItem className={loc.pathname === '/search' ? 'sidebar-item-active' : ''}>
 					<NavButton>Search</NavButton>
 				</SideBarItem>
 			</Link>
-			<Link to='/feed'>
-				<SideBarItem>
+			<Link to="/feed">
+				<SideBarItem className={loc.pathname === '/feed' ? 'sidebar-item-active' : ''}>
 					<NavButton>Feed</NavButton>
 				</SideBarItem>
 			</Link>
@@ -36,7 +36,7 @@ const SideBarContainer = styled.nav`
 	z-index: 1;
 	width: 75px;
 	height: 100%;
-	background-color: ${props => props.theme.background.sidebar};
+	background-color: ${(props) => props.theme.background.sidebar};
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -44,7 +44,7 @@ const SideBarContainer = styled.nav`
 
 	.sidebar-item-active {
 		div {
-			color: ${props => props.theme.text.primary} !important;
+			color: ${(props) => props.theme.text.primary} !important;
 		}
 
 		&::before {
@@ -67,7 +67,7 @@ const SideBarItem = styled.div`
 		}
 
 		& div {
-			color: ${props => props.theme.text.default[500]};
+			color: ${(props) => props.theme.text.default[500]};
 		}
 	}
 
@@ -79,7 +79,7 @@ const SideBarItem = styled.div`
 		height: 0;
 		border-radius: 999px;
 		transform: translate(-50%, -50%);
-		border-left: 5px solid ${props => props.theme.text.primary};
+		border-left: 5px solid ${(props) => props.theme.text.primary};
 		transition: height 100ms linear;
 	}
 
@@ -90,7 +90,7 @@ const SideBarItem = styled.div`
 
 const NavButton = styled.div`
 	font-family: 'MontserratBold';
-	color: ${props => props.theme.text.default[600]};
+	color: ${(props) => props.theme.text.default[600]};
 	writing-mode: vertical-lr;
 	text-orientation: sideways-right;
 	transition: color 100ms linear;
