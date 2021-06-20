@@ -38,7 +38,7 @@ export default function Progress() {
 				playerDispatch({ type: SET_SEEK })
 			}
 		},
-		[ setPlayable, playerState, playerDispatch ],
+		[ setPlayable, playerState.toSeek ],
 	)
 
 	const updateProgress = useCallback(
