@@ -38,6 +38,7 @@ export default function Progress() {
 				playerDispatch({ type: SET_SEEK })
 			}
 		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[ setPlayable, playerState.toSeek ],
 	)
 

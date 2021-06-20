@@ -10,7 +10,7 @@ const EpisodeCardContainer = styled.div`
 	grid-template-areas: 'cover content';
 	gap: 15px;
 
-	background-color: ${props => props.theme.background.card};
+	background-color: ${(props) => props.theme.background.card};
 	border-radius: 10px;
 	padding: 10px;
 	margin: 20px 0;
@@ -24,7 +24,6 @@ const EpisodeCover = styled.div`
 		max-width: 100%;
 		height: auto;
 		border-radius: 10px;
-		position: contain;
 	}
 `
 const EpisodeContent = styled.div`
@@ -34,9 +33,7 @@ const EpisodeContent = styled.div`
 	overflow: hidden;
 `
 
-const ControlsContainer = styled.div`
-	margin-top: auto;
-`
+const ControlsContainer = styled.div`margin-top: auto;`
 
 const Episode = {
 	EpisodesContainer,

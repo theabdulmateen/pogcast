@@ -34,13 +34,13 @@ export default function ContinueEpisodeListing() {
 									const ep = {
 										pogId: pogcast.id,
 										epId: episodes.docs[0].id,
-										seek: data.seek
+										seek: data.seek,
 									}
 									return ep
 								}
-							})
-						)
-					)
+							}),
+						),
+					),
 				)
 			}
 
@@ -51,19 +51,24 @@ export default function ContinueEpisodeListing() {
 							const ep = await api.getEpisodeById(pogres.epId)
 							return {
 								...ep,
-								...pogres
+								...pogres,
 							}
-						})
+						}),
 					)
 					setEpisodesPogress(episodes)
 				})
 				.catch((err) => console.log(err))
 		},
-		[ user ]
+		[ user ],
 	)
+
+	if (!episodesPogress || episodesPogress.length === 0) {
+		return null
+	}
 
 	return (
 		<div>
+			<Divider />
 			<Header>Continue where you left off</Header>
 			<div>
 				{episodesPogress.slice(0, 10).map((episode) => {

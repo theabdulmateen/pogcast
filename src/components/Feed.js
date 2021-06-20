@@ -37,7 +37,7 @@ export default function Feed() {
 				setAuthPopupOpen(true)
 			}
 		},
-		[ user ]
+		[ user ],
 	)
 
 	useEffect(
@@ -59,7 +59,7 @@ export default function Feed() {
 				})
 				.catch((err) => console.log(err))
 		},
-		[ user ]
+		[ user ],
 	)
 
 	return (
@@ -70,8 +70,8 @@ export default function Feed() {
 						display: 'flex',
 						justifyContent: 'center',
 						alignItems: 'center',
-						background: 'rgba(0, 0, 0, 0.2)'
-					}
+						background: 'rgba(0, 0, 0, 0.2)',
+					},
 				}}
 				isOpen={authPopupOpen}
 				onRequestClose={() => user && closeAuthPopup()}
@@ -112,7 +112,6 @@ export default function Feed() {
 				</PogListContainer>
 			</div>
 
-			{user && <Divider />}
 			{user && <ContinueEpisodeListing />}
 		</BaseContainer>
 	)
