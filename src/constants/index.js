@@ -10,6 +10,7 @@ const constants = {
 	PAUSE: 'Pause',
 	SAVE_POGCAST: 'Save pogcast to feed',
 	SEEK: 'seek',
+	SET_SEEK: 'set seek'
 }
 
 export default constants

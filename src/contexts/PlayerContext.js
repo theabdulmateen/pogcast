@@ -13,12 +13,14 @@ const {
 	PLAY,
 	PAUSE,
 	SEEK,
+	SET_SEEK,
 } = constants
 
 const initialState = {
 	epId: null,
 	pogId: null,
 	seek: 0,
+	toSeek: 0,
 	duration: 0,
 	isPlaying: false,
 	isLoaded: false,
@@ -44,16 +46,9 @@ const playerReducer = (state, action) => {
 
 			return {
 				...state,
-				epId: payload.epId,
-				pogId: payload.pogId,
+				...payload,
 				seek: 0,
-				duration: payload.duration,
 				isLoaded: true,
-				epQueue: payload.epQueue,
-				title: payload.title,
-				src: payload.src,
-				thumbnail: payload.thumbnail,
-				showName: payload.showName,
 				isPlaying: true,
 			}
 		}
@@ -61,7 +56,7 @@ const playerReducer = (state, action) => {
 		case ADD_TO_QUEUE: {
 			return {
 				...state,
-				epQueue: [{ ...payload }, ...state.epQueue],
+				epQueue: [ { ...payload }, ...state.epQueue ],
 			}
 		}
 
@@ -122,6 +117,14 @@ const playerReducer = (state, action) => {
 			}
 		}
 
+		case SET_SEEK: {
+			return {
+				...state,
+				seek: state.toSeek,
+				toSeek: 0,
+			}
+		}
+
 		default: {
 			return state
 		}
@@ -132,11 +135,7 @@ const PlayerContext = createContext()
 export const usePlayerContext = () => useContext(PlayerContext)
 
 export default function PlayerProvider({ children }) {
-	const [playerState, playerDispatch] = useReducer(playerReducer, initialState)
+	const [ playerState, playerDispatch ] = useReducer(playerReducer, initialState)
 
-	return (
-		<PlayerContext.Provider value={[playerState, playerDispatch]}>
-			{children}
-		</PlayerContext.Provider>
-	)
+	return <PlayerContext.Provider value={[ playerState, playerDispatch ]}>{children}</PlayerContext.Provider>
 }

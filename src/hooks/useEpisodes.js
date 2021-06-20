@@ -5,19 +5,9 @@ import constants from '../constants'
 const { PLAY_EPISODE } = constants
 
 export const useEpisodes = () => {
-	const [, playerDispatch] = usePlayerContext()
+	const [ , playerDispatch ] = usePlayerContext()
 
-	const playEpisode = ({
-		epId,
-		pogId,
-		seek,
-		duration,
-		title,
-		src,
-		thumbnail,
-		showName,
-		epQueueList,
-	}) => {
+	const playEpisode = ({ epId, pogId, toSeek, duration, title, src, thumbnail, showName, epQueueList }) => {
 		const epQueue = generateEpQueue(epQueueList, showName)
 
 		playerDispatch({
@@ -25,7 +15,7 @@ export const useEpisodes = () => {
 			payload: {
 				epId,
 				pogId,
-				seek,
+				toSeek,
 				duration,
 				title,
 				src,
@@ -36,5 +26,5 @@ export const useEpisodes = () => {
 		})
 	}
 
-	return [playEpisode]
+	return [ playEpisode ]
 }

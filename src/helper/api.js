@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { db, auth, firebase } from '../firebase'
+import { db, auth } from '../firebase'
 
 import { generateEpQueue } from './generateEpQueue'
 
@@ -11,8 +11,8 @@ export default class Api {
 			baseURL: this.apiURL,
 			timeout: 31000,
 			headers: {
-				'X-ListenAPI-Key': this.apiKey,
-			},
+				'X-ListenAPI-Key': this.apiKey
+			}
 		})
 	}
 
@@ -31,7 +31,7 @@ export default class Api {
 				src: ep.audio,
 				thumbnail: ep.thumbnail,
 				epQueue: epQueue.slice(1),
-				showName: ep.podcast.title,
+				showName: ep.podcast.title
 			}
 		} catch (err) {
 			if (err.response) {
@@ -47,7 +47,7 @@ export default class Api {
 		}
 	}
 
-	getGenres = async topOnly => {
+	getGenres = async (topOnly) => {
 		try {
 			if (localStorage.getItem('genres')) {
 				return JSON.parse(localStorage.getItem('genres'))
@@ -70,7 +70,7 @@ export default class Api {
 		}
 	}
 
-	getEpisodeById = async epId => {
+	getEpisodeById = async (epId) => {
 		try {
 			if (localStorage.getItem('episode-' + epId)) {
 				return JSON.parse(localStorage.getItem('episode-' + epId))
@@ -83,7 +83,7 @@ export default class Api {
 				title: ep.title,
 				src: ep.audio,
 				thumbnail: ep.thumbnail,
-				showName: ep.podcast.title,
+				showName: ep.podcast.title
 			}
 
 			localStorage.setItem('episode-' + epId, JSON.stringify(episode))
@@ -92,7 +92,7 @@ export default class Api {
 				title: ep.title,
 				src: ep.audio,
 				thumbnail: ep.thumbnail,
-				showName: ep.podcast.title,
+				showName: ep.podcast.title
 			}
 		} catch (err) {
 			if (err.response) {
@@ -115,9 +115,7 @@ export default class Api {
 			}
 			let result
 			if (nextEpisodePubDate) {
-				result = await this.client.get(
-					'/podcasts/' + pogId + '?next_episode_pub_date=' + nextEpisodePubDate
-				)
+				result = await this.client.get('/podcasts/' + pogId + '?next_episode_pub_date=' + nextEpisodePubDate)
 			} else {
 				result = await this.client.get('/podcasts/' + pogId)
 			}
@@ -142,7 +140,34 @@ export default class Api {
 		}
 	}
 
-	getPogcastIdFromEpId = async epId => {
+	getEpisodeById = async (epId) => {
+		try {
+			if (localStorage.getItem('episode-' + epId)) {
+				return JSON.parse(localStorage.getItem('episode-' + epId))
+			}
+			const result = await this.client.get('/episodes/' + epId)
+
+			if (!result) {
+				throw new Error('Invalid request')
+			}
+			const ep = result.data
+			localStorage.setItem('episode-' + epId, JSON.stringify(ep))
+			return ep
+		} catch (err) {
+			if (err.response) {
+				console.error(err.response.data)
+				throw err.response.data
+			} else if (err.request) {
+				console.error(err.request.data)
+				throw err.request.data
+			} else {
+				console.error(err)
+				throw err
+			}
+		}
+	}
+
+	getPogcastIdFromEpId = async (epId) => {
 		try {
 			if (localStorage.getItem('pogcastIdFromEpId-' + epId)) {
 				return JSON.parse(localStorage.getItem('pogcastIdFromEpId-' + epId))
@@ -165,7 +190,7 @@ export default class Api {
 		}
 	}
 
-	getBestPogcasts = async genreId => {
+	getBestPogcasts = async (genreId) => {
 		try {
 			if (localStorage.getItem('bestPodcasts-' + genreId)) {
 				return JSON.parse(localStorage.getItem('bestPodcasts-' + genreId))
@@ -210,7 +235,7 @@ export default class Api {
 		}
 	}
 
-	toggleSavePogcast = async pogId => {
+	toggleSavePogcast = async (pogId) => {
 		try {
 			if (!auth.currentUser) {
 				throw new Error('User is not logged in')
@@ -227,8 +252,8 @@ export default class Api {
 				await userFeedsRef.set(
 					{
 						saved: {
-							[pogId]: !isSaved,
-						},
+							[pogId]: !isSaved
+						}
 					},
 					{ merge: true }
 				)
@@ -239,8 +264,8 @@ export default class Api {
 			await userFeedsRef.set(
 				{
 					pogcasts: {
-						[pogId]: true,
-					},
+						[pogId]: true
+					}
 				},
 				{ merge: true }
 			)
@@ -260,21 +285,21 @@ export default class Api {
 		}
 	}
 
-	markPogress = async (pogId, epId, seek, completed = false) => {
+	markPogress = async (pogId, epId, seek, duration) => {
 		try {
 			if (!auth.currentUser) {
 				throw new Error('User is not logged in')
 			}
-			const episodeRef = db.collection('episodes').doc(auth.currentUser.uid)
-			await episodeRef.set(
+			const pogcastRef = db.collection('feeds').doc(auth.currentUser.uid).collection('pogcasts').doc(pogId)
+			await pogcastRef.set({ d: 7777 }, { merge: true })
+			await pogcastRef.collection('episodes').doc(epId).set(
 				{
-					pogId,
-					epId,
-					seek,
-					completed,
+					completed: duration - seek <= 0.05 * duration,
+					seek
 				},
 				{ merge: true }
 			)
+			return true
 		} catch (err) {
 			if (err.response) {
 				console.error(err.response.data)

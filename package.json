@@ -19,7 +19,7 @@
 		"react-modal": "^3.14.2",
 		"react-query": "^3.13.0",
 		"react-router-dom": "^5.2.0",
-		"react-scripts": "4.0.0",
+		"react-scripts": "^4.0.0",
 		"react-slider": "^1.1.2",
 		"react-transition-group": "^4.4.1",
 		"styled-components": "^5.2.1",
@@ -53,6 +53,7 @@
 	},
 	"devDependencies": {
 		"@craco/craco": "^5.9.0",
+		"chokidar": "^3.5.2",
 		"craco-less": "^1.17.1"
 	}
 }

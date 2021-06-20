@@ -5,7 +5,7 @@ import EpisodeCard from './EpisodeCard'
 import Typography from './elements/Typography'
 
 import { useAuth } from '../hooks/useAuth'
-import { db, firebase } from '../firebase'
+import { db } from '../firebase'
 import Api from '../helper/api'
 
 const api = new Api()
@@ -13,52 +13,73 @@ const api = new Api()
 const { Header } = Typography
 
 export default function ContinueEpisodeListing() {
-	const [pogcastProgress, setPogcastProgress] = useState([])
-	const [pogcasts, setPogcasts] = useState([])
+	const [ episodesPogress, setEpisodesPogress ] = useState([])
 
-	const [user] = useAuth()
+	const [ user ] = useAuth()
 
-	useEffect(() => {
-		if (!user) {
-			return
-		}
+	useEffect(
+		() => {
+			if (!user) {
+				return
+			}
 
-		const getPogcastsProgress = async () => {
-			const episodeRef = db.collection('episodes').doc(user.uid)
-			const episodeDocs = await episodeRef.get()
-			const docs = episodeDocs.data()
-			console.log({ docs })
-			// const maps = {}
-			// for (const doc in docs) {
-			// 	const data = await doc.data()
-			// 	maps[data.pogId] = [
-			// 		...maps[data.pogId],
-			// 		{ seek: data.seek, completed: data.completed, epId: data.epId },
-			// 	]
-			// 	console.log({ data })
-			// }
-		}
+			const getPogcastsProgress = async () => {
+				const pogcastsRef = db.collection('feeds').doc(user.uid).collection('pogcasts')
+				return pogcastsRef.get().then((pogcastsDocs) =>
+					Promise.all(
+						pogcastsDocs.docs.map((pogcast) =>
+							pogcast.ref.collection('episodes').get().then((episodes) => {
+								if (episodes.size > 0) {
+									const data = episodes.docs[0].data()
+									const ep = {
+										pogId: pogcast.id,
+										epId: episodes.docs[0].id,
+										seek: data.seek
+									}
+									return ep
+								}
+							})
+						)
+					)
+				)
+			}
 
-		getPogcastsProgress().then(pogress => {
-			// const p = pogress.map(pogres => api.getPogcastById(pogres.id))
-			// Promise.all(pogress.map(pogres => api.getPogcastById(pogres.id))).then(pogcasts => {
-			// 	setPogcasts(pogcasts)
-			// 	// console.log({ pogcasts })
-			// })
-		})
-	}, [user])
+			getPogcastsProgress()
+				.then(async (pogress) => {
+					const episodes = await Promise.all(
+						pogress.map(async (pogres) => {
+							const ep = await api.getEpisodeById(pogres.epId)
+							return {
+								...ep,
+								...pogres
+							}
+						})
+					)
+					setEpisodesPogress(episodes)
+				})
+				.catch((err) => console.log(err))
+		},
+		[ user ]
+	)
 
 	return (
 		<div>
 			<Header>Continue where you left off</Header>
 			<div>
-				{pogcastProgress.slice(10).map(pogress => {
-					if (!pogress.episodeProgress || pogress.episodeProgress.length === 0) {
+				{episodesPogress.slice(0, 10).map((episode) => {
+					if (!episode) {
 						return null
 					}
+
 					return (
-						<div>
-							<EpisodeCard />
+						<div key={episode.epId}>
+							<EpisodeCard
+								ep={episode}
+								pogId={episode.pogId}
+								pogcastTitle={episode.podcast.title}
+								epQueue={[]}
+								toSeek={episode.seek}
+							/>
 						</div>
 					)
 				})}
