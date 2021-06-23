@@ -17,35 +17,34 @@ export default function App() {
 			<Layout>
 				<Route
 					render={({ location }) => (
-						<TransitionGroup
-							style={{ minHeight: '100%', position: 'relative', overflow: 'hidden' }}>
-							<CSSTransition key={location.key} classNames='fade' timeout={450}>
+						<TransitionGroup style={{ minHeight: '100%', position: 'relative' }}>
+							<CSSTransition key={location.key} classNames="fade" timeout={450}>
 								<Switch location={location}>
-									<Route exact path='/'>
+									<Route exact path="/">
 										<Home />
 									</Route>
 
-									<Route exact path='/explore'>
+									<Route exact path="/explore">
 										<Explore />
 									</Route>
 
-									<Route exact path='/pogcast/:pogId'>
+									<Route exact path="/pogcast/:pogId">
 										<PogcastDetails />
 									</Route>
 
-									<Route exact path='/genre-listing'>
+									<Route exact path="/genre-listing">
 										<Home />
 									</Route>
 
-									<Route exact path='/top-podcasts/:genreId'>
+									<Route exact path="/top-podcasts/:genreId">
 										<TopPodcastListing />
 									</Route>
 
-									<Route exact path='/search'>
+									<Route exact path="/search">
 										<SearchCatalogs />
 									</Route>
 
-									<Route exact path='/feed'>
+									<Route exact path="/feed">
 										<Feed />
 									</Route>
 								</Switch>

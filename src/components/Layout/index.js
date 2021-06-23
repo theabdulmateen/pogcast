@@ -4,11 +4,10 @@ import PogPlayer from '../PogPlayer'
 import NavBar from './NavBar'
 import SideBar from './SideBar'
 
-const LayoutContainer = styled.div`
-	height: 100%;
-`
+const LayoutContainer = styled.div`height: 100%;`
 
 const ContentContainer = styled.div`
+	min-height: 100%;
 	padding-left: 75px;
 	padding-bottom: 85px;
 `

@@ -7,12 +7,13 @@ export default class Api {
 	constructor() {
 		// this.apiKey = process.env.REACT_APP_API_KEY
 		this.apiURL = process.env.REACT_APP_API_ENDPOINT
+		// this.apiURL = process.env.REACT_APP_API_TEST_ENDPOINT
 		this.client = axios.create({
 			baseURL: this.apiURL,
 			timeout: 31000,
 			headers: {
-				'X-ListenAPI-Key': this.apiKey
-			}
+				'X-ListenAPI-Key': this.apiKey,
+			},
 		})
 	}
 
@@ -31,7 +32,7 @@ export default class Api {
 				src: ep.audio,
 				thumbnail: ep.thumbnail,
 				epQueue: epQueue.slice(1),
-				showName: ep.podcast.title
+				showName: ep.podcast.title,
 			}
 		} catch (err) {
 			if (err.response) {
@@ -70,6 +71,52 @@ export default class Api {
 		}
 	}
 
+	getRegions = async () => {
+		try {
+			if (localStorage.getItem('regions')) {
+				return JSON.parse(localStorage.getItem('regions'))
+			}
+			const result = await this.client.get(`/regions`)
+			const regions = result.data.regions
+			localStorage.setItem('regions', JSON.stringify(regions))
+			return regions
+		} catch (err) {
+			if (err.response) {
+				console.error(err.response.data)
+				throw err.response.data
+			} else if (err.request) {
+				console.error(err.request.data)
+				throw err.request.data
+			} else {
+				console.error(err)
+				throw err
+			}
+		}
+	}
+
+	getLanguages = async () => {
+		try {
+			if (localStorage.getItem('languages')) {
+				return JSON.parse(localStorage.getItem('languages'))
+			}
+			const result = await this.client.get(`/languages`)
+			const languages = result.data.languages
+			localStorage.setItem('languages', JSON.stringify(languages))
+			return languages
+		} catch (err) {
+			if (err.response) {
+				console.error(err.response.data)
+				throw err.response.data
+			} else if (err.request) {
+				console.error(err.request.data)
+				throw err.request.data
+			} else {
+				console.error(err)
+				throw err
+			}
+		}
+	}
+
 	getEpisodeById = async (epId) => {
 		try {
 			if (localStorage.getItem('episode-' + epId)) {
@@ -83,7 +130,7 @@ export default class Api {
 				title: ep.title,
 				src: ep.audio,
 				thumbnail: ep.thumbnail,
-				showName: ep.podcast.title
+				showName: ep.podcast.title,
 			}
 
 			localStorage.setItem('episode-' + epId, JSON.stringify(episode))
@@ -92,7 +139,7 @@ export default class Api {
 				title: ep.title,
 				src: ep.audio,
 				thumbnail: ep.thumbnail,
-				showName: ep.podcast.title
+				showName: ep.podcast.title,
 			}
 		} catch (err) {
 			if (err.response) {
@@ -212,14 +259,19 @@ export default class Api {
 		}
 	}
 
-	searchCatalogs = async (searchTerm, searchType = 'episode', filter = {}) => {
+	searchCatalogs = async (searchTerm, searchType = 'episode', offset, filter = {}) => {
 		try {
+			if (localStorage.getItem('search')) {
+				return JSON.parse(localStorage.getItem('search'))
+			}
 			let options = `?q=${searchTerm}&type=${searchType}`
+			options += `&offset=${offset}`
 			for (const key in Object.keys(filter)) {
 				options += `&${key}=${filter[key]}`
 			}
 
 			const result = await this.client.get('/search' + options)
+			localStorage.setItem('search', JSON.stringify(result.data.results))
 			return result.data.results
 		} catch (err) {
 			if (err.response) {
@@ -252,10 +304,10 @@ export default class Api {
 				await userFeedsRef.set(
 					{
 						saved: {
-							[pogId]: !isSaved
-						}
+							[pogId]: !isSaved,
+						},
 					},
-					{ merge: true }
+					{ merge: true },
 				)
 				return !isSaved
 			}
@@ -264,10 +316,10 @@ export default class Api {
 			await userFeedsRef.set(
 				{
 					pogcasts: {
-						[pogId]: true
-					}
+						[pogId]: true,
+					},
 				},
-				{ merge: true }
+				{ merge: true },
 			)
 			return true
 		} catch (err) {
@@ -295,9 +347,9 @@ export default class Api {
 			await pogcastRef.collection('episodes').doc(epId).set(
 				{
 					completed: duration - seek <= 0.05 * duration,
-					seek
+					seek,
 				},
-				{ merge: true }
+				{ merge: true },
 			)
 			return true
 		} catch (err) {

@@ -14,4 +14,12 @@ module.exports = {
 			},
 		},
 	],
+	// devServer: {
+	// 	proxy: {
+	// 		'/api/v2': {
+	// 			target: 'https://listen-api-test.listennotes.com/api/v2',
+	// 			secure: false,
+	// 		},
+	// 	},
+	// },
 }

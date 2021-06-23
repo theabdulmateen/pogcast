@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Input } from 'antd'
+import { Divider, Input } from 'antd'
 import { SearchOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 
@@ -13,6 +13,9 @@ import { useGenres } from '../hooks/useGenres'
 import { useSearch } from '../hooks/useSearch'
 
 import Image from './Image'
+import Filters from './Filters'
+
+import { debounce } from '../helper/debounce'
 
 const { Search } = Input
 const { PogListContainer } = Container
@@ -21,73 +24,88 @@ const { PogCard, Cover, Content } = StyledCard
 const { ActionButton } = StyledButton
 
 export default function SearchCatalogs() {
-	const [searchTerm, setSearchTerm] = useState('')
-	const [enabled, setEnabled] = useState(false)
+	const [ searchTerm, setSearchTerm ] = useState('')
+	const [ enabled, setEnabled ] = useState(false)
+	const [ filters, setFilters ] = useState({})
 	const { data: genres } = useGenres()
-	const { data: pogs, isLoading, status } = useSearch(searchTerm, enabled)
+	const { data, isLoading, status, hasNextPage, fetchNextPage } = useSearch(searchTerm, 'podcast', enabled)
 
 	const searchResultRef = useRef()
 
-	useEffect(() => {
-		if (status === 'success') {
-			searchResultRef.current.scrollIntoView({ behavior: 'smooth' })
-			setSearchTerm('')
-			setEnabled(false)
-		}
-	}, [status])
+	useEffect(
+		() => {
+			if (status === 'success') {
+				searchResultRef.current.scrollIntoView({ behavior: 'smooth' })
+				// setSearchTerm('')
+				// setEnabled(false)
+			}
+		},
+		[ status ],
+	)
 
 	return (
 		<SearchContainer>
-			<CoverContainer>
-				<Wrapper>
-					<Jumbotron>
-						<PrimaryTitle>Pogcast</PrimaryTitle>
-						<Caption>Search for podcast or an episode using keyword</Caption>
-						<StyledSearch
-							allowClear
-							loading={isLoading}
-							prefix={<SearchOutlined />}
-							enterButton='Search'
-							size='large'
-							onSearch={inputText => {
-								setSearchTerm(inputText)
+			<Wrapper>
+				<Jumbotron>
+					<PrimaryTitle>Pogcast</PrimaryTitle>
+					<StyledSearch
+						allowClear
+						loading={isLoading}
+						prefix={<SearchOutlined />}
+						enterButton="Search"
+						size="large"
+						onChange={debounce((Event) => {
+							if (Event.target.value) {
+								setSearchTerm(Event.target.value)
 								setEnabled(true)
-							}}
-							placeholder='Search for a podcast or an episode...'
-						/>
-					</Jumbotron>
-					<GenresContainer>
-						{genres &&
-							genres.slice(0, 14).map((genre, index) => (
-								<GenreButton key={index} index={index} type='primary'>
-									{genre.name}
-								</GenreButton>
-							))}
-					</GenresContainer>
-				</Wrapper>
-			</CoverContainer>
+							}
+						}, 1000)}
+						placeholder="Search for a podcast or an episode..."
+					/>
+					<Caption>Search for podcast or an episode using keyword - powered by listen notes</Caption>
+					<Link to="/explore">
+						<ActionButton type="primary">Go to explore</ActionButton>
+					</Link>
+				</Jumbotron>
+			</Wrapper>
+
 			<ListingContainer ref={searchResultRef}>
-				{status === 'success' && <Title>Search results for '{searchTerm}'</Title>}
+				{status === 'success' && (
+					<div>
+						<Divider />
+						<Title style={{ fontSize: '1.2em' }}>
+							Search results for
+							<span style={{ color: '#8F7251', fontWeight: 900, fontSize: '1.2em', marginLeft: '0.8em' }}>
+								{searchTerm}
+							</span>
+						</Title>
+						<Divider />
+						<div>
+							<Filters setFilters={setFilters} />
+						</div>
+					</div>
+				)}
 				<PogListContainer>
 					{!isLoading &&
 						status === 'success' &&
-						pogs &&
-						pogs.map(pog => (
-							<Link key={pog.id} to={`/pogcast/${pog.id}`}>
-								<PogCard>
-									<Cover>
-										<Image source={pog.thumbnail} alt='thumbnail' />
-									</Cover>
-									<Content>
-										<Title>{pog.title}</Title>
-										<Description>
-											{pog.description.replace(/(<([^>]+)>)/gi, '')}
-										</Description>
-									</Content>
-								</PogCard>
-							</Link>
-						))}
+						data &&
+						data.pages.map((pogs) =>
+							pogs.map((pog) => (
+								<Link key={pog.id} to={`/pogcast/${pog.id}`}>
+									<PogCard>
+										<Cover>
+											<Image source={pog.thumbnail} alt="thumbnail" />
+										</Cover>
+										<Content>
+											<Title>{pog.title}</Title>
+											<Description>{pog.description.replace(/(<([^>]+)>)/gi, '')}</Description>
+										</Content>
+									</PogCard>
+								</Link>
+							)),
+						)}
 				</PogListContainer>
+				{hasNextPage && <button onClick={fetchNextPage}>load more</button>}
 			</ListingContainer>
 		</SearchContainer>
 	)
@@ -95,84 +113,74 @@ export default function SearchCatalogs() {
 
 const SearchContainer = styled.div`
 	width: 100%;
+	min-height: calc(100vh - 85px);
 	position: relative;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
 `
-const CoverContainer = styled.div`
+const Wrapper = styled.div`
+	display: grid;
+	place-items: center;
 	width: 100%;
-	min-height: calc(100vh - 255px);
-	background-image: url('images/gene-jeter-kcV7BxcVtU4-unsplash.jpg');
-	background-position: center;
-	background-size: cover;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
 `
 const Jumbotron = styled.div`
-	width: 55%;
-	margin: auto;
+	padding: 2em;
+	width: 100%;
+	max-width: 700px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1em;
 `
 const PrimaryTitle = styled.div`
-	color: ${props => props.theme.text.default[900]};
-	font-size: 100px;
+	color: ${(props) => props.theme.text.default[900]};
+	font-size: 6rem;
 	font-weight: 600;
 	line-height: 85px;
 	margin-bottom: 25px;
 
-	${props => props.theme.phoneOnly} {
+	${(props) => props.theme.phoneOnly} {
 		font-size: 50px;
 	}
 `
+const StyledSearch = styled.input`
+	width: 100%;
+	height: 55px;
+	border: none;
+	border-radius: 10px;
+	padding: 0px 40px;
+	background-color: ${(props) => props.theme.background.player};
+	color: ${(props) => props.theme.text.default[800]};
+	font-size: 1.2em;
+	font-weight: 600;
+
+	&::placeholder {
+		color: ${(props) => props.theme.text.default[200]};
+	}
+
+	&:focus,
+	&:active {
+		outline: none !important;
+	}
+`
 const Caption = styled.div`
-	color: ${props => props.theme.text.default[900]};
-	font-size: 24px;
+	color: ${(props) => props.theme.text.default[900]};
+	font-size: 1.2em;
 	font-weight: 400;
 	margin-bottom: 15px;
-	text-decoration: underline;
 	overflow-wrap: break-word;
 
-	${props => props.theme.phoneOnly} {
+	${(props) => props.theme.phoneOnly} {
 		font-size: 18px;
 	}
 `
-const StyledSearch = styled(Search)`
-	& .ant-input-affix-wrapper {
-		background-color: white;
-	}
-	.ant-input-affix-wrapper-focused,
-	.ant-input-affix-wrapper:focus,
-	.ant-input-affix-wrapper:hover,
-	.ant-input-affix-wrapper:active {
-		border-color: black;
-		outline: none !important;
-		box-shadow: 0 0 10px #424242;
-	}
-	& input {
-		color: black;
-		outline: none !important;
-		box-shadow: none;
-	}
-	& input::placeholder,
-	.ant-input-prefix {
-		color: black;
-	}
-	.ant-input-prefix {
-		padding-right: 5px;
-	}
-	& input:focus,
-	& input:active {
-		outline: none !important;
-		border-color: none;
-	}
-	.ant-input-group-addon {
-		button {
-			background-color: #1c1c1c;
-			color: ${props => props.theme.text.default[900]};
-			border: 2px solid #424242;
-			&:hover {
-				color: ${props => props.theme.text.default[800]};
-			}
-		}
-	}
+const ListingContainer = styled.div`
+	padding: 0 5em;
+	margin: 85px 0;
 `
+
 const GenresContainer = styled.div`
 	display: grid;
 	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -181,19 +189,21 @@ const GenresContainer = styled.div`
 	margin: auto;
 	margin-top: 50px;
 `
-const Wrapper = styled.div`
-	padding-top: 144px;
-`
 const GenreButton = styled(ActionButton)`
-	background-color: ${props => props.theme.primary};
-	color: ${props => props.theme.text.default[900]};
+	background-color: ${(props) => props.theme.primary};
+	color: ${(props) => props.theme.text.default[900]};
 	border: 2px solid #3c3c3c;
 	&:hover {
-		color: ${props => props.theme.text.default[800]};
+		color: ${(props) => props.theme.text.default[800]};
 		transform: none;
 	}
 `
-const ListingContainer = styled.div`
-	padding: 0 200px;
-	margin: 85px 0;
+const CoverContainer = styled.div`
+	width: 100%;
+	min-height: calc(100vh - 255px);
+	/* background-image: url('images/gene-jeter-kcV7BxcVtU4-unsplash.jpg'); */
+	/* background-position: center; */
+	/* background-size: cover; */
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 `
