@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Divider, Input } from 'antd'
-import { SearchOutlined } from '@ant-design/icons'
 import styled from 'styled-components'
 
 import Container from './elements/Container'
@@ -9,7 +8,6 @@ import StyledCard from './elements/StyledCard'
 import StyledButton from './elements/StyledButton'
 import Typography from './elements/Typography'
 
-import { useGenres } from '../hooks/useGenres'
 import { useSearch } from '../hooks/useSearch'
 
 import Image from './Image'
@@ -17,7 +15,6 @@ import Filters from './Filters'
 
 import { debounce } from '../helper/debounce'
 
-const { Search } = Input
 const { PogListContainer } = Container
 const { Title, Description } = Typography
 const { PogCard, Cover, Content } = StyledCard
@@ -27,8 +24,7 @@ export default function SearchCatalogs() {
 	const [ searchTerm, setSearchTerm ] = useState('')
 	const [ enabled, setEnabled ] = useState(false)
 	const [ filters, setFilters ] = useState({})
-	const { data: genres } = useGenres()
-	const { data, isLoading, status, hasNextPage, fetchNextPage } = useSearch(searchTerm, 'podcast', enabled)
+	const { data, isLoading, status, hasNextPage, fetchNextPage } = useSearch(searchTerm, filters, enabled)
 
 	const searchResultRef = useRef()
 
@@ -36,8 +32,6 @@ export default function SearchCatalogs() {
 		() => {
 			if (status === 'success') {
 				searchResultRef.current.scrollIntoView({ behavior: 'smooth' })
-				// setSearchTerm('')
-				// setEnabled(false)
 			}
 		},
 		[ status ],
@@ -49,11 +43,6 @@ export default function SearchCatalogs() {
 				<Jumbotron>
 					<PrimaryTitle>Pogcast</PrimaryTitle>
 					<StyledSearch
-						allowClear
-						loading={isLoading}
-						prefix={<SearchOutlined />}
-						enterButton="Search"
-						size="large"
 						onChange={debounce((Event) => {
 							if (Event.target.value) {
 								setSearchTerm(Event.target.value)
@@ -81,7 +70,7 @@ export default function SearchCatalogs() {
 						</Title>
 						<Divider />
 						<div>
-							<Filters setFilters={setFilters} />
+							<Filters setFilters={setFilters} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 						</div>
 					</div>
 				)}

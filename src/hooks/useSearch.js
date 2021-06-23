@@ -1,13 +1,13 @@
-import { useInfiniteQuery, useQuery } from 'react-query'
+import { useInfiniteQuery } from 'react-query'
 
 import Api from '../helper/api'
 const api = new Api()
 
-export const useSearch = (searchText, searchType = 'episode', enabled) => {
+export const useSearch = (searchText, filters, enabled) => {
 	return useInfiniteQuery(
-		[ 'search', searchText ],
+		[ 'search', searchText + JSON.stringify(filters) ],
 		async ({ pageParam = 0 }) => {
-			const results = await api.searchCatalogs(searchText, searchType, pageParam)
+			const results = await api.searchCatalogs(searchText, filters, pageParam)
 			let pogs = []
 			results.forEach((res) => {
 				const podcast = {

@@ -5,7 +5,7 @@ import { generateEpQueue } from './generateEpQueue'
 
 export default class Api {
 	constructor() {
-		// this.apiKey = process.env.REACT_APP_API_KEY
+		this.apiKey = process.env.REACT_APP_API_KEY
 		this.apiURL = process.env.REACT_APP_API_ENDPOINT
 		// this.apiURL = process.env.REACT_APP_API_TEST_ENDPOINT
 		this.client = axios.create({
@@ -117,43 +117,43 @@ export default class Api {
 		}
 	}
 
-	getEpisodeById = async (epId) => {
-		try {
-			if (localStorage.getItem('episode-' + epId)) {
-				return JSON.parse(localStorage.getItem('episode-' + epId))
-			}
-			const resp = await this.client.get('/episodes/' + epId)
-			const ep = resp.data
+	// getEpisodeById = async (epId) => {
+	// 	try {
+	// 		if (localStorage.getItem('episode-' + epId)) {
+	// 			return JSON.parse(localStorage.getItem('episode-' + epId))
+	// 		}
+	// 		const resp = await this.client.get('/episodes/' + epId)
+	// 		const ep = resp.data
 
-			const episode = {
-				pogId: ep.podcast.id,
-				title: ep.title,
-				src: ep.audio,
-				thumbnail: ep.thumbnail,
-				showName: ep.podcast.title,
-			}
+	// 		const episode = {
+	// 			pogId: ep.podcast.id,
+	// 			title: ep.title,
+	// 			src: ep.audio,
+	// 			thumbnail: ep.thumbnail,
+	// 			showName: ep.podcast.title,
+	// 		}
 
-			localStorage.setItem('episode-' + epId, JSON.stringify(episode))
-			return {
-				pogId: ep.podcast.id,
-				title: ep.title,
-				src: ep.audio,
-				thumbnail: ep.thumbnail,
-				showName: ep.podcast.title,
-			}
-		} catch (err) {
-			if (err.response) {
-				console.error(err.response.data)
-				throw err.response.data
-			} else if (err.request) {
-				console.error(err.request.data)
-				throw err.request.data
-			} else {
-				console.error(err)
-				throw err
-			}
-		}
-	}
+	// 		localStorage.setItem('episode-' + epId, JSON.stringify(episode))
+	// 		return {
+	// 			pogId: ep.podcast.id,
+	// 			title: ep.title,
+	// 			src: ep.audio,
+	// 			thumbnail: ep.thumbnail,
+	// 			showName: ep.podcast.title,
+	// 		}
+	// 	} catch (err) {
+	// 		if (err.response) {
+	// 			console.error(err.response.data)
+	// 			throw err.response.data
+	// 		} else if (err.request) {
+	// 			console.error(err.request.data)
+	// 			throw err.request.data
+	// 		} else {
+	// 			console.error(err)
+	// 			throw err
+	// 		}
+	// 	}
+	// }
 
 	getPogcastById = async (pogId, nextEpisodePubDate) => {
 		try {
@@ -259,15 +259,19 @@ export default class Api {
 		}
 	}
 
-	searchCatalogs = async (searchTerm, searchType = 'episode', offset, filter = {}) => {
+	searchCatalogs = async (searchTerm, filters = {}, offset) => {
 		try {
 			if (localStorage.getItem('search')) {
 				return JSON.parse(localStorage.getItem('search'))
 			}
-			let options = `?q=${searchTerm}&type=${searchType}`
+			let options = `?q=${searchTerm}`
 			options += `&offset=${offset}`
-			for (const key in Object.keys(filter)) {
-				options += `&${key}=${filter[key]}`
+			for (const key in Object.keys(filters)) {
+				let value = filters[key]
+				if (typeof filters[key] === Array) {
+					value = filters[key].join(',')
+				}
+				options += `&${key}=${value}`
 			}
 
 			const result = await this.client.get('/search' + options)

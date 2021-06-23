@@ -53,8 +53,8 @@ const GlobalStyle = createGlobalStyle`
 	}
 
 	body, html, #root {
-		background-color: ${props => props.theme.background.default};
-		color: ${props => props.theme.text.default[600]};
+		background-color: ${(props) => props.theme.background.default};
+		color: ${(props) => props.theme.text.default[600]};
 		height: 100%;
 		width: 100%;
 	}
@@ -93,7 +93,7 @@ ReactDOM.render(
 			</QueryClientProvider>
 		</ThemeProvider>
 	</React.StrictMode>,
-	document.getElementById('root')
+	document.getElementById('root'),
 )
 
 // If you want to start measuring performance in your app, pass a function
