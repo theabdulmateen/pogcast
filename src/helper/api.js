@@ -5,7 +5,7 @@ import { generateEpQueue } from './generateEpQueue'
 
 export default class Api {
 	constructor() {
-		this.apiKey = process.env.REACT_APP_API_KEY
+		// this.apiKey = process.env.REACT_APP_API_KEY
 		this.apiURL = process.env.REACT_APP_API_ENDPOINT
 		// this.apiURL = process.env.REACT_APP_API_TEST_ENDPOINT
 		this.client = axios.create({
@@ -157,9 +157,9 @@ export default class Api {
 
 	getPogcastById = async (pogId, nextEpisodePubDate) => {
 		try {
-			if (localStorage.getItem('pogcast-' + pogId)) {
-				return JSON.parse(localStorage.getItem('pogcast-' + pogId))
-			}
+			// 	if (localStorage.getItem('pogcast-' + pogId)) {
+			// 		return JSON.parse(localStorage.getItem('pogcast-' + pogId))
+			// 	}
 			let result
 			if (nextEpisodePubDate) {
 				result = await this.client.get('/podcasts/' + pogId + '?next_episode_pub_date=' + nextEpisodePubDate)
@@ -175,9 +175,11 @@ export default class Api {
 			return pog
 		} catch (err) {
 			if (err.response) {
+				console.log('error in response')
 				console.error(err.response.data)
 				throw err.response.data
 			} else if (err.request) {
+				console.log('error in request')
 				console.error(err.request.data)
 				throw err.request.data
 			} else {
@@ -189,9 +191,9 @@ export default class Api {
 
 	getEpisodeById = async (epId) => {
 		try {
-			if (localStorage.getItem('episode-' + epId)) {
-				return JSON.parse(localStorage.getItem('episode-' + epId))
-			}
+			// if (localStorage.getItem('episode-' + epId)) {
+			// 	return JSON.parse(localStorage.getItem('episode-' + epId))
+			// }
 			const result = await this.client.get('/episodes/' + epId)
 
 			if (!result) {
@@ -239,9 +241,9 @@ export default class Api {
 
 	getBestPogcasts = async (genreId) => {
 		try {
-			if (localStorage.getItem('bestPodcasts-' + genreId)) {
-				return JSON.parse(localStorage.getItem('bestPodcasts-' + genreId))
-			}
+			// if (localStorage.getItem('bestPodcasts-' + genreId)) {
+			// 	return JSON.parse(localStorage.getItem('bestPodcasts-' + genreId))
+			// }
 			const result = await this.client.get(`/best_podcasts?genre_id=${genreId}`)
 			localStorage.setItem('bestPodcasts-' + genreId, JSON.stringify(result.data.podcasts))
 			return result.data.podcasts
@@ -261,21 +263,46 @@ export default class Api {
 
 	searchCatalogs = async (searchTerm, filters = {}, offset) => {
 		try {
-			if (localStorage.getItem('search')) {
-				return JSON.parse(localStorage.getItem('search'))
+			switch (filters.type) {
+				case 'podcast':
+					if (localStorage.getItem('search-podcast')) {
+						return JSON.parse(localStorage.getItem('search-podcast'))
+					}
+					break
+				case 'curated':
+					if (localStorage.getItem('search-curated')) {
+						return JSON.parse(localStorage.getItem('search-curated'))
+					}
+					break
+				default:
+					if (localStorage.getItem('search-episode')) {
+						return JSON.parse(localStorage.getItem('search-episode'))
+					}
 			}
 			let options = `?q=${searchTerm}`
 			options += `&offset=${offset}`
-			for (const key in Object.keys(filters)) {
-				let value = filters[key]
+			for (const [ key, value ] of Object.entries(filters)) {
+				let v = value
 				if (typeof filters[key] === Array) {
-					value = filters[key].join(',')
+					v = filters[key].join(',')
 				}
-				options += `&${key}=${value}`
+				options += `&${key}=${v}`
 			}
 
 			const result = await this.client.get('/search' + options)
-			localStorage.setItem('search', JSON.stringify(result.data.results))
+			console.log('search results with filters: ', filters)
+			console.log(result.data.results)
+			console.log(options)
+			switch (filters.type) {
+				case 'podcast':
+					localStorage.setItem('search-podcast', JSON.stringify(result.data.results))
+					break
+				case 'curated':
+					localStorage.setItem('search-curated', JSON.stringify(result.data.results))
+					break
+				default:
+					localStorage.setItem('search-episode', JSON.stringify(result.data.results))
+			}
 			return result.data.results
 		} catch (err) {
 			if (err.response) {

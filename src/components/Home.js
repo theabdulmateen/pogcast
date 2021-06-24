@@ -13,7 +13,7 @@ export default function Home() {
 	return (
 		<HomeContainer>
 			<Jumbotron>
-				<Logo>Pogcasts</Logo>
+				<Logo>Pogcast</Logo>
 				<Title>
 					FIND YOUR <br />
 					NEXT FAVORITE <br />
@@ -22,15 +22,17 @@ export default function Home() {
 				<Caption>Start listening now</Caption>
 
 				<ActionsContainer>
-					<Link to='/explore'>
-						<ActionButton type='primary'>EXPLORE</ActionButton>
+					<Link to="/explore">
+						<ActionButton type="primary">EXPLORE</ActionButton>
 					</Link>
 					<ActionButton
-						onClick={e => {
+						style={{ marginTop: 10 }}
+						onClick={(e) => {
 							playRandomEpisode()
 							e.target.blur()
 						}}
-						type='default'>
+						type="default"
+					>
 						PLAY RANDOM
 					</ActionButton>
 				</ActionsContainer>
@@ -59,35 +61,48 @@ const Jumbotron = styled.div`
 `
 
 const Logo = styled.div`
-	color: ${props => props.theme.text.default[500]};
+	color: ${(props) => props.theme.text.default[500]};
 	font-size: 50px;
 	font-weight: 600;
 
-	${props => props.theme.phoneOnly} {
+	${(props) => props.theme.phoneOnly} {
 		font-size: 25px;
 	}
 `
 const Title = styled.div`
-	color: ${props => props.theme.text.default[800]};
+	color: ${(props) => props.theme.text.default[800]};
 	font-family: 'Monoton';
-	font-size: 100px;
+	font-size: 8em;
 	line-height: 110px;
 
-	${props => props.theme.phoneOnly} {
-		font-size: 36px;
-		line-height: 37px;
+	${(props) => props.theme.tabletLandscapeUp} {
+		font-size: 6em;
+		line-height: 1em;
+	}
+
+	${(props) => props.theme.tabletPortraitUp} {
+		font-size: 6em;
+		line-height: 1em;
+	}
+
+	${(props) => props.theme.desktopUp} {
+		font-size: 8em;
+		line-height: 110px;
+	}
+
+	${(props) => props.theme.phoneOnly} {
+		font-size: 4em;
+		line-height: 1.1em;
 	}
 `
 const Caption = styled.div`
-	color: ${props => props.theme.text.secondary};
+	color: ${(props) => props.theme.text.secondary};
 	font-size: 65px;
 	font-weight: 600;
 
-	${props => props.theme.phoneOnly} {
+	${(props) => props.theme.phoneOnly} {
 		font-size: 30px;
 	}
 `
 
-const ActionsContainer = styled.div`
-	margin-top: 4em;
-`
+const ActionsContainer = styled.div`margin-top: 4em;`

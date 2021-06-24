@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Divider, Input } from 'antd'
+import { Divider } from 'antd'
 import styled from 'styled-components'
 
 import Container from './elements/Container'
@@ -14,6 +14,7 @@ import Image from './Image'
 import Filters from './Filters'
 
 import { debounce } from '../helper/debounce'
+import EpisodeCard from './EpisodeCard'
 
 const { PogListContainer } = Container
 const { Title, Description } = Typography
@@ -62,7 +63,7 @@ export default function SearchCatalogs() {
 				{status === 'success' && (
 					<div>
 						<Divider />
-						<Title style={{ fontSize: '1.2em' }}>
+						<Title style={{ fontSize: '2em' }}>
 							Search results for
 							<span style={{ color: '#8F7251', fontWeight: 900, fontSize: '1.2em', marginLeft: '0.8em' }}>
 								{searchTerm}
@@ -74,26 +75,81 @@ export default function SearchCatalogs() {
 						</div>
 					</div>
 				)}
-				<PogListContainer>
+				<SearchResultsContainer>
 					{!isLoading &&
 						status === 'success' &&
 						data &&
-						data.pages.map((pogs) =>
-							pogs.map((pog) => (
-								<Link key={pog.id} to={`/pogcast/${pog.id}`}>
-									<PogCard>
-										<Cover>
-											<Image source={pog.thumbnail} alt="thumbnail" />
-										</Cover>
-										<Content>
-											<Title>{pog.title}</Title>
-											<Description>{pog.description.replace(/(<([^>]+)>)/gi, '')}</Description>
-										</Content>
-									</PogCard>
-								</Link>
-							)),
+						data.pages.map(
+							(result) =>
+								filters.type === 'podcast' ? (
+									<PogListContainer>
+										{result.map((res) => (
+											<Link key={res.id} to={`/pogcast/${res.id}`}>
+												<PogCard>
+													<Cover>
+														<Image source={res.thumbnail} alt="thumbnail" />
+													</Cover>
+													<Content>
+														<Title>{res.title_original}</Title>
+														<Description>
+															{res.description_original.replace(/(<([^>]+)>)/gi, '')}
+														</Description>
+													</Content>
+												</PogCard>
+											</Link>
+										))}
+									</PogListContainer>
+								) : filters.type === 'curated' ? (
+									<div>
+										{result.map((res) => (
+											<div>
+												<Title>{res.title_original}</Title>
+
+												<PogListContainer>
+													{res.podcasts &&
+														res.podcasts.map((pog) => (
+															<Link key={pog.id} to={`/pogcast/${pog.id}`}>
+																<PogCard>
+																	<Cover>
+																		<Image source={pog.thumbnail} alt="thumbnail" />
+																	</Cover>
+																	<Content>
+																		<Title>{pog.title}</Title>
+																		<Description>{pog.title}</Description>
+																	</Content>
+																</PogCard>
+															</Link>
+														))}
+												</PogListContainer>
+												<Divider />
+											</div>
+										))}
+									</div>
+								) : (
+									<div style={{ display: 'flex', flexDirection: 'column' }}>
+										{result.map(
+											(res) =>
+												res.audio && (
+													<div key={res.id}>
+														<EpisodeCard
+															ep={{
+																...res,
+																id: res.id,
+																thumbnail: res.thumbnail,
+																title: res.title_original,
+																description: res.description_original,
+															}}
+															pogId={res.podcast.id}
+															pogcastTitle={res.podcast.title_original}
+															epQueue={[]}
+														/>
+													</div>
+												),
+										)}
+									</div>
+								),
 						)}
-				</PogListContainer>
+				</SearchResultsContainer>
 				{hasNextPage && <button onClick={fetchNextPage}>load more</button>}
 			</ListingContainer>
 		</SearchContainer>
@@ -168,31 +224,7 @@ const Caption = styled.div`
 const ListingContainer = styled.div`
 	padding: 0 5em;
 	margin: 85px 0;
-`
-
-const GenresContainer = styled.div`
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-	width: 77%;
-	gap: 8px;
-	margin: auto;
-	margin-top: 50px;
-`
-const GenreButton = styled(ActionButton)`
-	background-color: ${(props) => props.theme.primary};
-	color: ${(props) => props.theme.text.default[900]};
-	border: 2px solid #3c3c3c;
-	&:hover {
-		color: ${(props) => props.theme.text.default[800]};
-		transform: none;
-	}
-`
-const CoverContainer = styled.div`
 	width: 100%;
-	min-height: calc(100vh - 255px);
-	/* background-image: url('images/gene-jeter-kcV7BxcVtU4-unsplash.jpg'); */
-	/* background-position: center; */
-	/* background-size: cover; */
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
 `
+const SearchResultsContainer = styled.div`/* display: flex;
+	flex-direction: column; */`

@@ -8,17 +8,17 @@ export const useSearch = (searchText, filters, enabled) => {
 		[ 'search', searchText + JSON.stringify(filters) ],
 		async ({ pageParam = 0 }) => {
 			const results = await api.searchCatalogs(searchText, filters, pageParam)
-			let pogs = []
-			results.forEach((res) => {
-				const podcast = {
-					id: res.id,
-					title: res.title_original,
-					thumbnail: res.thumbnail,
-					description: res.description_original,
-				}
-				pogs = [ ...pogs, podcast ]
-			})
-			return pogs
+			// let pogs = []
+			// results.forEach((res) => {
+			// 	const podcast = {
+			// 		id: res.id,
+			// 		title: res.title_original,
+			// 		thumbnail: res.thumbnail,
+			// 		description: res.description_original,
+			// 	}
+			// 	pogs = [ ...pogs, podcast ]
+			// })
+			return results
 		},
 		{
 			getNextPageParam: (lastPage) => {
